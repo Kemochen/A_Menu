@@ -39,12 +39,19 @@ docker build -t a-menu .
 docker run -p 3000:80 a-menu
 ```
 
+## Docker Compose
+
+```bash
+docker compose up -d --build
+```
+
+启动后访问 `http://NAS-IP:3000`。
+
 ## Synology Container Manager
 
 1. 把项目文件夹复制到 NAS。
-2. 在 Container Manager 里从包含 `Dockerfile` 的文件夹创建项目。
-3. 构建镜像。
-4. 把容器端口 `80` 映射到主机端口，例如 `3000`。
-5. 启动后访问 `http://NAS-IP:3000`。
+2. 在 Container Manager 里选择“项目”，从包含 `docker-compose.yml` 的文件夹创建项目。
+3. 构建并启动项目。
+4. 启动后访问 `http://NAS-IP:3000`。
 
 不需要数据库或外部服务，菜单和历史记录保存在浏览器本地。

@@ -26,8 +26,15 @@ type IngredientUse = {
 type HistoryEntry = {
   id: string;
   submittedAt: string;
+  updatedAt?: string;
   items: HistoryItem[];
   ingredientSummary: IngredientUse[];
+};
+
+type HistoryResponse = {
+  entry?: HistoryEntry;
+  historyEntries: HistoryEntry[];
+  error?: string;
 };
 
 type MenuAppProps = {
@@ -35,9 +42,6 @@ type MenuAppProps = {
 };
 
 const allCategory = "全部";
-const planStorageKey = "a-menu-current-plan";
-const historyStorageKey = "a-menu-history";
-const lastEatenStorageKey = "a-menu-last-eaten";
 
 const weekdays: { id: WeekdayId; label: string }[] = [
   { id: "monday", label: "周一" },
@@ -53,38 +57,6 @@ const weekdayLabels = Object.fromEntries(weekdays.map((day) => [day.id, day.labe
   WeekdayId,
   string
 >;
-
-function getInitialLastEaten(recipes: Recipe[]) {
-  const today = new Date();
-
-  return Object.fromEntries(
-    recipes
-      .filter((recipe) => recipe.initialLastEatenDaysAgo)
-      .map((recipe) => {
-        const date = new Date(today);
-        date.setDate(today.getDate() - Number(recipe.initialLastEatenDaysAgo));
-
-        return [recipe.id, date.toISOString()];
-      })
-  );
-}
-
-function getStoredValue<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") {
-    return fallback;
-  }
-
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function setStoredValue<T>(key: string, value: T) {
-  window.localStorage.setItem(key, JSON.stringify(value));
-}
 
 function summarizeIngredients(items: PlannedDish[], recipes: Recipe[]) {
   const counts = new Map<string, number>();
@@ -168,27 +140,100 @@ function isLastWeek(value: string) {
   return date >= startOfLastWeek && date < startOfThisWeek;
 }
 
+async function readHistory() {
+  const response = await fetch("/api/history", { cache: "no-store" });
+  const data = (await response.json()) as HistoryResponse;
+
+  if (!response.ok) {
+    throw new Error(data.error ?? "读取历史记录失败。");
+  }
+
+  return data.historyEntries;
+}
+
+async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown) {
+  const response = await fetch("/api/history", {
+    method,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+  const data = (await response.json()) as HistoryResponse;
+
+  if (!response.ok) {
+    throw new Error(data.error ?? "操作失败。");
+  }
+
+  return data;
+}
+
 export function MenuApp({ recipes }: MenuAppProps) {
   const [activeCategory, setActiveCategory] = useState(allCategory);
   const [plannedDishes, setPlannedDishes] = useState<PlannedDish[]>([]);
   const [historyEntries, setHistoryEntries] = useState<HistoryEntry[]>([]);
-  const [lastEatenByRecipe, setLastEatenByRecipe] = useState<Record<string, string>>({});
   const [selectedDayByRecipe, setSelectedDayByRecipe] = useState<Record<string, WeekdayId>>({});
   const [historyFilter, setHistoryFilter] = useState<"all" | "last-week">("all");
   const [submittedEntry, setSubmittedEntry] = useState<HistoryEntry | null>(null);
-
-  useEffect(() => {
-    setPlannedDishes(getStoredValue<PlannedDish[]>(planStorageKey, []));
-    setHistoryEntries(getStoredValue<HistoryEntry[]>(historyStorageKey, []));
-    setLastEatenByRecipe(
-      getStoredValue<Record<string, string>>(lastEatenStorageKey, getInitialLastEaten(recipes))
-    );
-  }, [recipes]);
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [notice, setNotice] = useState("");
 
   const recipesById = useMemo(
     () => Object.fromEntries(recipes.map((recipe) => [recipe.id, recipe])) as Record<string, Recipe>,
     [recipes]
   );
+
+  useEffect(() => {
+    let isMounted = true;
+
+    readHistory()
+      .then((entries) => {
+        if (isMounted) {
+          setHistoryEntries(entries);
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setNotice(error instanceof Error ? error.message : "读取历史记录失败。");
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoadingHistory(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const lastEatenByRecipe = useMemo(() => {
+    const today = new Date();
+    const result: Record<string, string> = {};
+
+    for (const recipe of recipes) {
+      if (recipe.initialLastEatenDaysAgo) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - recipe.initialLastEatenDaysAgo);
+        result[recipe.id] = date.toISOString();
+      }
+    }
+
+    for (const entry of historyEntries) {
+      for (const item of entry.items) {
+        const current = result[item.recipeId];
+
+        if (!current || new Date(entry.submittedAt) > new Date(current)) {
+          result[item.recipeId] = entry.submittedAt;
+        }
+      }
+    }
+
+    return result;
+  }, [historyEntries, recipes]);
 
   const categories = useMemo(
     () => [allCategory, ...Array.from(new Set(recipes.map((recipe) => recipe.category)))],
@@ -223,11 +268,6 @@ export function MenuApp({ recipes }: MenuAppProps) {
     [historyEntries, historyFilter]
   );
 
-  function updatePlan(nextPlan: PlannedDish[]) {
-    setPlannedDishes(nextPlan);
-    setStoredValue(planStorageKey, nextPlan);
-  }
-
   function addRecipeToPlan(recipeId: string) {
     const day = selectedDayByRecipe[recipeId] ?? "monday";
     const alreadyPlanned = plannedDishes.some(
@@ -238,7 +278,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
       return;
     }
 
-    updatePlan([
+    setPlannedDishes([
       ...plannedDishes,
       {
         id: `${recipeId}-${day}-${Date.now()}`,
@@ -247,56 +287,93 @@ export function MenuApp({ recipes }: MenuAppProps) {
       }
     ]);
     setSubmittedEntry(null);
+    setNotice("");
   }
 
   function removePlannedDish(itemId: string) {
-    updatePlan(plannedDishes.filter((item) => item.id !== itemId));
+    setPlannedDishes(plannedDishes.filter((item) => item.id !== itemId));
     setSubmittedEntry(null);
   }
 
   function clearPlan() {
-    updatePlan([]);
+    setPlannedDishes([]);
+    setEditingEntryId(null);
     setSubmittedEntry(null);
+    setNotice("");
   }
 
-  function submitPlan() {
+  function editHistory(entry: HistoryEntry) {
+    setEditingEntryId(entry.id);
+    setSubmittedEntry(null);
+    setNotice("正在修改一条已提交记录，保存后所有人都会看到新结果。");
+    setPlannedDishes(
+      entry.items.map((item, index) => ({
+        id: `${entry.id}-${item.recipeId}-${item.day}-${index}`,
+        recipeId: item.recipeId,
+        day: item.day
+      }))
+    );
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function deleteHistory(entryId: string) {
+    const confirmed = window.confirm("确定删除这条历史菜单吗？删除后其他人也看不到。");
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsSaving(true);
+    setNotice("");
+
+    try {
+      const data = await saveHistory("DELETE", { id: entryId });
+      setHistoryEntries(data.historyEntries);
+
+      if (editingEntryId === entryId) {
+        clearPlan();
+      }
+
+      setNotice("历史记录已删除。");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "删除失败。");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  async function submitPlan() {
     if (plannedDishes.length === 0) {
       return;
     }
 
-    const submittedAt = new Date().toISOString();
-    const items = plannedDishes.map((item) => {
-      const recipe = recipesById[item.recipeId];
+    const items = plannedDishes.map((item) => ({
+      recipeId: item.recipeId,
+      day: item.day
+    }));
 
-      return {
-        recipeId: item.recipeId,
-        recipeName: recipe?.name ?? "未知菜品",
-        day: item.day
-      };
-    });
-    const newEntry: HistoryEntry = {
-      id: `history-${Date.now()}`,
-      submittedAt,
-      items,
-      ingredientSummary
-    };
-    const nextHistory = [newEntry, ...historyEntries];
-    const nextLastEaten = { ...lastEatenByRecipe };
+    setIsSaving(true);
+    setNotice("");
 
-    for (const item of plannedDishes) {
-      nextLastEaten[item.recipeId] = submittedAt;
+    try {
+      const data = editingEntryId
+        ? await saveHistory("PUT", { id: editingEntryId, items })
+        : await saveHistory("POST", { items });
+
+      setHistoryEntries(data.historyEntries);
+      setSubmittedEntry(data.entry ?? null);
+      setPlannedDishes([]);
+      setEditingEntryId(null);
+      setNotice(editingEntryId ? "修改已保存，其他人刷新后也能看到。" : "提交成功，其他人也可以查看。");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "提交失败。");
+    } finally {
+      setIsSaving(false);
     }
-
-    setHistoryEntries(nextHistory);
-    setLastEatenByRecipe(nextLastEaten);
-    setSubmittedEntry(newEntry);
-    setStoredValue(historyStorageKey, nextHistory);
-    setStoredValue(lastEatenStorageKey, nextLastEaten);
-    updatePlan([]);
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-4 px-4 py-4 text-ink sm:px-6 lg:grid lg:grid-cols-[1fr_380px] lg:gap-6 lg:py-8">
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-4 px-4 py-4 text-ink sm:px-6 lg:grid lg:grid-cols-[1fr_400px] lg:gap-6 lg:py-8">
       <section className="min-w-0">
         <header className="mb-4">
           <p className="mb-1 text-sm font-semibold uppercase tracking-wide text-leaf">A Menu</p>
@@ -304,7 +381,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
             <div>
               <h1 className="text-3xl font-bold leading-tight sm:text-4xl">本周菜单</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                选择菜品时先选周几食用，加入菜单后统一提交保存。
+                选择菜品和食用日期后提交，记录会保存在服务器上，所有访问者都能查看。
               </p>
             </div>
             <div className="rounded-lg border border-line bg-white px-3 py-2 text-sm shadow-soft">
@@ -418,20 +495,24 @@ export function MenuApp({ recipes }: MenuAppProps) {
         <section className="rounded-lg border border-line bg-white shadow-soft">
           <div className="flex items-center justify-between gap-3 border-b border-line p-4">
             <div>
-              <h2 className="text-xl font-bold">待提交菜单</h2>
+              <h2 className="text-xl font-bold">{editingEntryId ? "修改历史菜单" : "待提交菜单"}</h2>
               <p className="mt-1 text-sm text-slate-600">按周一到周日整理</p>
             </div>
             <button
               type="button"
               onClick={clearPlan}
-              disabled={plannedDishes.length === 0}
+              disabled={plannedDishes.length === 0 && !editingEntryId}
               className="h-10 rounded-lg border border-line px-3 text-sm font-semibold text-slate-600 transition hover:border-berry hover:text-berry disabled:cursor-not-allowed disabled:opacity-40"
             >
-              清空
+              {editingEntryId ? "取消" : "清空"}
             </button>
           </div>
 
           <div className="grid gap-5 p-4">
+            {notice ? (
+              <p className="rounded-lg bg-slate-50 p-3 text-sm font-medium text-slate-700">{notice}</p>
+            ) : null}
+
             <section aria-labelledby="selected-dishes-title">
               <h3 id="selected-dishes-title" className="mb-3 text-sm font-bold uppercase tracking-wide">
                 已选菜品
@@ -506,10 +587,10 @@ export function MenuApp({ recipes }: MenuAppProps) {
             <button
               type="button"
               onClick={submitPlan}
-              disabled={plannedDishes.length === 0}
+              disabled={plannedDishes.length === 0 || isSaving}
               className="h-12 rounded-lg bg-ink px-4 text-sm font-bold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
-              Submit 提交最终菜单
+              {isSaving ? "保存中..." : editingEntryId ? "保存更改" : "Submit 提交最终菜单"}
             </button>
           </div>
         </section>
@@ -518,12 +599,12 @@ export function MenuApp({ recipes }: MenuAppProps) {
           <section className="rounded-lg border border-leaf bg-white p-4 shadow-soft">
             <h2 className="text-lg font-bold text-leaf">最终结果</h2>
             <p className="mt-1 text-sm text-slate-600">
-              已提交 {submittedEntry.items.length} 道菜，并刷新上次食用时间。
+              已保存 {submittedEntry.items.length} 道菜，所有访问者都可以查看。
             </p>
             <div className="mt-4 grid gap-4">
               <div>
                 <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
-                  提交菜品
+                  菜品
                 </h3>
                 <ul className="grid gap-1">
                   {submittedEntry.items.map((item, index) => (
@@ -551,7 +632,17 @@ export function MenuApp({ recipes }: MenuAppProps) {
 
         <section className="rounded-lg border border-line bg-white shadow-soft">
           <div className="border-b border-line p-4">
-            <h2 className="text-xl font-bold">历史菜谱</h2>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-bold">历史菜谱</h2>
+                <p className="mt-1 text-sm text-slate-600">所有人提交的记录都在这里</p>
+              </div>
+              {isLoadingHistory ? (
+                <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">
+                  读取中
+                </span>
+              ) : null}
+            </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -582,9 +673,35 @@ export function MenuApp({ recipes }: MenuAppProps) {
             {visibleHistory.length > 0 ? (
               visibleHistory.map((entry) => (
                 <article key={entry.id} className="rounded-lg bg-slate-50 p-3">
-                  <p className="mb-2 text-xs font-bold text-slate-500">
-                    {formatDateTime(entry.submittedAt)}
-                  </p>
+                  <div className="mb-2 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold text-slate-500">
+                        {formatDateTime(entry.submittedAt)}
+                      </p>
+                      {entry.updatedAt && entry.updatedAt !== entry.submittedAt ? (
+                        <p className="mt-1 text-xs text-slate-500">
+                          更新：{formatDateTime(entry.updatedAt)}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => editHistory(entry)}
+                        className="h-8 rounded-lg border border-line bg-white px-2.5 text-xs font-bold text-slate-600 hover:border-leaf hover:text-leaf"
+                      >
+                        修改
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteHistory(entry.id)}
+                        disabled={isSaving}
+                        className="h-8 rounded-lg border border-line bg-white px-2.5 text-xs font-bold text-slate-600 hover:border-berry hover:text-berry disabled:opacity-40"
+                      >
+                        删除
+                      </button>
+                    </div>
+                  </div>
                   <ul className="grid gap-1">
                     {entry.items.map((item, index) => (
                       <li key={`${entry.id}-${item.recipeId}-${index}`} className="text-sm text-slate-700">
@@ -596,7 +713,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
               ))
             ) : (
               <p className="rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
-                {historyFilter === "last-week" ? "还没有上周记录。" : "提交后会在这里看到历史菜单。"}
+                {historyFilter === "last-week" ? "还没有上周记录。" : "提交后会在这里看到共享历史菜单。"}
               </p>
             )}
           </div>

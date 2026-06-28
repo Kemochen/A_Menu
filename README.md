@@ -11,9 +11,11 @@
 - 选择菜品时必须选择周一到周日的某一天
 - 待提交菜单按星期分组展示
 - 食材汇总只显示“几道菜用到”，不显示克数或精确用量
-- Submit 后保存最终结果、刷新菜品上次食用时间，并写入本地历史菜谱
+- Submit 后保存最终结果、刷新菜品上次食用时间，并写入服务器共享历史菜谱
+- 所有访问者都能查看同一份历史菜谱
+- 已提交的历史记录可以修改或删除
 - 历史菜谱支持查看全部和上周记录
-- 静态 Docker 部署，适合 Synology Container Manager
+- Docker 部署，适合 Synology Container Manager
 
 ## 本地运行
 
@@ -36,7 +38,7 @@ image: "/dishes/my-dish.svg"
 
 ```bash
 docker build -t a-menu .
-docker run -p 3000:80 a-menu
+docker run -p 3000:3000 -v a-menu-data:/app/storage a-menu
 ```
 
 ## Docker Compose
@@ -56,4 +58,4 @@ docker compose up -d --build
 
 如果构建时报 `Property 'eaDir' is missing`，说明群晖生成的 `@eaDir` 缩略图/索引目录被 Next.js 误认为页面路由。项目已经在 `.dockerignore` 中排除了 `@eaDir`，并且 `npm run build` 会先自动清理 `@eaDir`、旧 `.next` 和旧 `out` 后再构建。
 
-不需要数据库或外部服务，菜单和历史记录保存在浏览器本地。
+不需要数据库或外部服务。共享历史记录保存在 Docker volume `a-menu-data` 里，对所有访问者可见。删除这个 volume 会清空历史记录。

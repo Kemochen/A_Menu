@@ -5,5 +5,10 @@ services:
       dockerfile: Dockerfile
     container_name: a-menu
     ports:
-      - "3000:80"
+      - "3000:3000"
+    volumes:
+      - a-menu-data:/app/storage
     restart: unless-stopped
+
+volumes:
+  a-menu-data:

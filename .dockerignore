@@ -1,6 +1,8 @@
 .git
 .next
 node_modules
+out
+storage
 @eaDir
 **/@eaDir
 **/@eaDir/**

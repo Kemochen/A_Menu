@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Spicy tofu rice</title>
+  <desc id="desc">Rice with spicy tofu cubes and scallions.</desc>
+  <rect width="640" height="480" fill="#f7f9fb"/>
+  <rect width="640" height="210" fill="#f2e8e5"/>
+  <ellipse cx="320" cy="304" rx="220" ry="116" fill="#eef1f6"/>
+  <ellipse cx="320" cy="288" rx="182" ry="81" fill="#fffdf8"/>
+  <ellipse cx="315" cy="304" rx="138" ry="58" fill="#f5f1e8"/>
+  <rect x="230" y="226" width="72" height="58" rx="8" fill="#fff2dd"/>
+  <rect x="330" y="234" width="76" height="62" rx="8" fill="#fff0d6"/>
+  <rect x="282" y="292" width="78" height="58" rx="8" fill="#ffefd5"/>
+  <path d="M219 276c66 33 142 36 226 5" fill="none" stroke="#c33b32" stroke-width="20" stroke-linecap="round"/>
+  <path d="M238 329c63-25 130-25 205 0" fill="none" stroke="#d74a36" stroke-width="15" stroke-linecap="round"/>
+  <path d="M248 238l68 96M420 243l-103 81M216 315l205-77" stroke="#2f8e5d" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="439" cy="300" r="12" fill="#a92f2b"/>
+</svg>

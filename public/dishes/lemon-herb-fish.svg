@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Lemon herb fish</title>
+  <desc id="desc">A fish fillet with lemon slices and herbs.</desc>
+  <rect width="640" height="480" fill="#f7f9fb"/>
+  <rect width="640" height="210" fill="#e4f0df"/>
+  <rect x="139" y="196" width="362" height="190" rx="8" fill="#f6f8fb"/>
+  <path d="M194 284c78-90 221-88 301 0-79 91-223 89-301 0z" fill="#f8efe0"/>
+  <path d="M214 284c70-61 184-61 252 0-68 62-182 62-252 0z" fill="#fff7ea"/>
+  <path d="M452 284l49-42v84z" fill="#f4dfc4"/>
+  <circle cx="256" cy="265" r="35" fill="#f3c74e"/>
+  <circle cx="256" cy="265" r="24" fill="#fff3a9"/>
+  <path d="M242 249l28 32M270 249l-29 32M232 265h48" stroke="#e7b846" stroke-width="5" stroke-linecap="round"/>
+  <path d="M331 244c34 37 73 38 116 2M325 319c39-30 80-31 125-2" fill="none" stroke="#33845f" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="421" cy="281" r="8" fill="#283545"/>
+</svg>

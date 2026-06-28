@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Ginger chicken soup</title>
+  <desc id="desc">A warm bowl of chicken soup with ginger and scallions.</desc>
+  <rect width="640" height="480" fill="#f7f9fb"/>
+  <rect width="640" height="210" fill="#e9edf7"/>
+  <ellipse cx="320" cy="300" rx="224" ry="116" fill="#e8eef5"/>
+  <ellipse cx="320" cy="283" rx="185" ry="84" fill="#f4c760"/>
+  <ellipse cx="320" cy="276" rx="160" ry="62" fill="#ffd874"/>
+  <path d="M210 238c19-34 61-34 77 0M332 231c22-31 55-30 72 0M420 241c17-26 47-25 62 0" fill="none" stroke="#cfd7e6" stroke-width="12" stroke-linecap="round"/>
+  <path d="M243 295l62-38 40 31-66 42z" fill="#fff4dd"/>
+  <path d="M363 302l63-34 31 26-62 39z" fill="#fff2d5"/>
+  <path d="M248 249l79 58M410 247l-77 68" stroke="#2f8e5d" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="219" cy="294" r="16" fill="#f07f3e"/>
+  <circle cx="461" cy="286" r="14" fill="#e66f38"/>
+</svg>

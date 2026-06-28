@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Cucumber cold noodles</title>
+  <desc id="desc">Cold noodles topped with cucumber ribbons and sesame sauce.</desc>
+  <rect width="640" height="480" fill="#f7f9fb"/>
+  <rect width="640" height="210" fill="#d9eef2"/>
+  <ellipse cx="320" cy="305" rx="218" ry="112" fill="#edf2f5"/>
+  <ellipse cx="320" cy="288" rx="184" ry="78" fill="#fffdf8"/>
+  <path d="M188 292c63-47 210-64 287-12" fill="none" stroke="#ead684" stroke-width="31" stroke-linecap="round"/>
+  <path d="M216 325c62-52 186-62 252-12" fill="none" stroke="#f2dc8e" stroke-width="28" stroke-linecap="round"/>
+  <path d="M228 251c77 59 166 63 247 12" fill="none" stroke="#efd27b" stroke-width="23" stroke-linecap="round"/>
+  <path d="M208 270c70 18 137 19 205-3" fill="none" stroke="#4aab76" stroke-width="14" stroke-linecap="round"/>
+  <path d="M250 236c74 31 135 31 210 0" fill="none" stroke="#69bf89" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="350" cy="286" r="31" fill="#d2a15c"/>
+  <circle cx="350" cy="286" r="16" fill="#f0c77a"/>
+  <circle cx="423" cy="312" r="9" fill="#bd342f"/>
+</svg>

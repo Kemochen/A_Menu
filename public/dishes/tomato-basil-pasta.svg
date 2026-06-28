@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Tomato basil pasta</title>
+  <desc id="desc">A bowl of pasta with tomato and basil.</desc>
+  <rect width="640" height="480" fill="#f7f9fb"/>
+  <rect x="0" y="0" width="640" height="210" fill="#dcefe7"/>
+  <ellipse cx="320" cy="300" rx="220" ry="112" fill="#f4f6f8"/>
+  <ellipse cx="320" cy="286" rx="188" ry="82" fill="#fffdf8"/>
+  <path d="M175 287c52-68 237-76 303-6" fill="none" stroke="#e7b75f" stroke-width="34" stroke-linecap="round"/>
+  <path d="M186 323c69-61 205-79 289-16" fill="none" stroke="#f0c979" stroke-width="30" stroke-linecap="round"/>
+  <path d="M217 265c81 59 177 58 236 4" fill="none" stroke="#f5d88c" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="250" cy="286" r="22" fill="#d94838"/>
+  <circle cx="386" cy="300" r="24" fill="#df513f"/>
+  <circle cx="325" cy="253" r="19" fill="#c83f32"/>
+  <path d="M353 238c26-31 55-24 73 5-29 16-53 12-73-5z" fill="#2f8e5d"/>
+  <path d="M220 313c24-25 48-20 65 5-26 12-47 10-65-5z" fill="#27784f"/>
+</svg>

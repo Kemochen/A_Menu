@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Watermelon feta salad</title>
+  <desc id="desc">Watermelon and feta salad with mint and cucumber.</desc>
+  <rect width="640" height="480" fill="#f7f9fb"/>
+  <rect width="640" height="210" fill="#dceff1"/>
+  <rect x="139" y="194" width="362" height="194" rx="8" fill="#ffffff"/>
+  <path d="M210 326l52-99 99 54z" fill="#f06472"/>
+  <path d="M390 229l50 99-110-38z" fill="#ef5268"/>
+  <path d="M255 229l-45 94" stroke="#3e9b67" stroke-width="16" stroke-linecap="round"/>
+  <path d="M434 326l-43-93" stroke="#3e9b67" stroke-width="16" stroke-linecap="round"/>
+  <rect x="279" y="319" width="45" height="36" rx="6" fill="#fff3dc"/>
+  <rect x="373" y="287" width="42" height="32" rx="6" fill="#fff7e6"/>
+  <rect x="232" y="269" width="39" height="31" rx="6" fill="#fff4df"/>
+  <circle cx="278" cy="273" r="6" fill="#202733"/>
+  <circle cx="331" cy="290" r="6" fill="#202733"/>
+  <circle cx="397" cy="274" r="6" fill="#202733"/>
+  <path d="M237 236c34-26 63-23 86 8-35 13-63 10-86-8zM340 346c36-24 64-19 85 12-35 11-62 7-85-12z" fill="#2f8e5d"/>
+</svg>

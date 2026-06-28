@@ -54,6 +54,6 @@ docker compose up -d --build
 3. 构建并启动项目。
 4. 启动后访问 `http://NAS-IP:3000`。
 
-如果构建时报 `Property 'eaDir' is missing`，说明群晖生成的 `@eaDir` 缩略图/索引目录被 Next.js 误认为页面路由。项目已经在 `.dockerignore` 中排除了 `@eaDir`，请重新构建项目；如果 NAS 项目目录里已经有 `app/@eaDir`，先删除这些 `@eaDir` 目录后再构建。
+如果构建时报 `Property 'eaDir' is missing`，说明群晖生成的 `@eaDir` 缩略图/索引目录被 Next.js 误认为页面路由。项目已经在 `.dockerignore` 中排除了 `@eaDir`，并且 `npm run build` 会先自动清理 `@eaDir`、旧 `.next` 和旧 `out` 后再构建。
 
 不需要数据库或外部服务，菜单和历史记录保存在浏览器本地。

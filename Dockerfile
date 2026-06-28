@@ -8,6 +8,8 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN find . -name '@eaDir' -type d -prune -exec rm -rf {} + \
+  && rm -rf .next out
 RUN npm run build
 
 FROM nginx:1.27-alpine AS runner

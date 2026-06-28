@@ -3,6 +3,9 @@ node_modules
 out
 dist
 .env*.local
+@eaDir
+**/@eaDir
+**/@eaDir/**
 *.tsbuildinfo
 preview*.log
 npm-debug.log*

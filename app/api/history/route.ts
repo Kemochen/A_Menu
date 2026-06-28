@@ -35,7 +35,7 @@ type Store = {
   historyEntries: HistoryEntry[];
 };
 
-const weekdays = new Set<WeekdayId>([
+const weekdayList: WeekdayId[] = [
   "monday",
   "tuesday",
   "wednesday",
@@ -43,7 +43,9 @@ const weekdays = new Set<WeekdayId>([
   "friday",
   "saturday",
   "sunday"
-]);
+];
+const weekdays = new Set<WeekdayId>(weekdayList);
+const weekdayOrder = new Map(weekdayList.map((day, index) => [day, index]));
 
 const recipesById = new Map(recipes.map((recipe) => [recipe.id, recipe]));
 const dataFile = process.env.DATA_FILE ?? join(process.cwd(), "storage", "menu-history.json");
@@ -66,6 +68,10 @@ function summarizeIngredients(items: HistoryItem[]) {
   return Array.from(counts, ([name, count]) => ({ name, count })).sort(
     (a, b) => b.count - a.count || a.name.localeCompare(b.name, "zh-CN")
   );
+}
+
+function sortItemsByDay<T extends { day: WeekdayId }>(items: T[]) {
+  return [...items].sort((a, b) => Number(weekdayOrder.get(a.day)) - Number(weekdayOrder.get(b.day)));
 }
 
 function normalizeItems(value: unknown): HistoryItem[] {
@@ -100,7 +106,7 @@ function normalizeItems(value: unknown): HistoryItem[] {
     throw new Error("请选择至少一道菜。");
   }
 
-  return items;
+  return sortItemsByDay(items);
 }
 
 async function readStore(): Promise<Store> {
@@ -109,7 +115,12 @@ async function readStore(): Promise<Store> {
     const parsed = JSON.parse(raw) as Store;
 
     return {
-      historyEntries: Array.isArray(parsed.historyEntries) ? parsed.historyEntries : []
+      historyEntries: Array.isArray(parsed.historyEntries)
+        ? parsed.historyEntries.map((entry) => ({
+            ...entry,
+            items: sortItemsByDay(entry.items)
+          }))
+        : []
     };
   } catch {
     return { historyEntries: [] };

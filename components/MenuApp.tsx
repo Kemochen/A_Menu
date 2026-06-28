@@ -57,6 +57,14 @@ const weekdayLabels = Object.fromEntries(weekdays.map((day) => [day.id, day.labe
   WeekdayId,
   string
 >;
+const weekdayOrder = Object.fromEntries(weekdays.map((day, index) => [day.id, index])) as Record<
+  WeekdayId,
+  number
+>;
+
+function sortItemsByDay<T extends { day: WeekdayId }>(items: T[]) {
+  return [...items].sort((a, b) => weekdayOrder[a.day] - weekdayOrder[b.day]);
+}
 
 function summarizeIngredients(items: PlannedDish[], recipes: Recipe[]) {
   const counts = new Map<string, number>();
@@ -295,6 +303,29 @@ export function MenuApp({ recipes }: MenuAppProps) {
     setSubmittedEntry(null);
   }
 
+  function updatePlannedDishDay(itemId: string, day: WeekdayId) {
+    const target = plannedDishes.find((item) => item.id === itemId);
+
+    if (!target) {
+      return;
+    }
+
+    const alreadyPlanned = plannedDishes.some(
+      (item) => item.id !== itemId && item.recipeId === target.recipeId && item.day === day
+    );
+
+    if (alreadyPlanned) {
+      setNotice("这道菜已经安排在这一天了。");
+      return;
+    }
+
+    setPlannedDishes(
+      plannedDishes.map((item) => (item.id === itemId ? { ...item, day } : item))
+    );
+    setSubmittedEntry(null);
+    setNotice("");
+  }
+
   function clearPlan() {
     setPlannedDishes([]);
     setEditingEntryId(null);
@@ -307,7 +338,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
     setSubmittedEntry(null);
     setNotice("正在修改一条已提交记录，保存后所有人都会看到新结果。");
     setPlannedDishes(
-      entry.items.map((item, index) => ({
+      sortItemsByDay(entry.items).map((item, index) => ({
         id: `${entry.id}-${item.recipeId}-${item.day}-${index}`,
         recipeId: item.recipeId,
         day: item.day
@@ -419,11 +450,14 @@ export function MenuApp({ recipes }: MenuAppProps) {
             );
 
             return (
-              <article key={recipe.id} className="overflow-hidden rounded-lg border border-line bg-white shadow-soft">
-                <div className="relative aspect-[4/3] bg-slate-100">
+              <article
+                key={recipe.id}
+                className="grid grid-cols-[104px_1fr] overflow-hidden rounded-lg border border-line bg-white shadow-soft sm:block"
+              >
+                <div className="relative h-[132px] bg-slate-100 sm:aspect-[4/3] sm:h-auto">
                   <img src={recipe.image} alt={recipe.name} className="h-full w-full object-cover" />
                   <span
-                    className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-lg bg-white/95 text-xl shadow-soft"
+                    className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-lg bg-white/95 text-base shadow-soft sm:right-3 sm:top-3 sm:h-10 sm:w-10 sm:text-xl"
                     title={weatherLabels[recipe.weather]}
                     aria-label={weatherLabels[recipe.weather]}
                   >
@@ -431,18 +465,18 @@ export function MenuApp({ recipes }: MenuAppProps) {
                   </span>
                 </div>
 
-                <div className="grid gap-3 p-4">
+                <div className="grid gap-2 p-3 sm:gap-3 sm:p-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-berry">
                       {recipe.category}
                     </p>
-                    <h2 className="mt-1 text-lg font-bold leading-snug">{recipe.name}</h2>
+                    <h2 className="mt-1 text-base font-bold leading-snug sm:text-lg">{recipe.name}</h2>
                     <p className="mt-1 text-xs font-medium text-slate-500">
                       上次食用：{formatRelativeTime(lastEatenByRecipe[recipe.id])}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="hidden flex-wrap gap-2 sm:flex">
                     {recipe.tags.map((tag) => (
                       <span
                         key={tag}
@@ -466,7 +500,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
                           [recipe.id]: event.target.value as WeekdayId
                         }))
                       }
-                      className="h-10 rounded-lg border border-line bg-white px-3 text-sm font-semibold text-slate-700"
+                      className="h-9 rounded-lg border border-line bg-white px-2 text-sm font-semibold text-slate-700 sm:h-10 sm:px-3"
                     >
                       {weekdays.map((day) => (
                         <option key={day.id} value={day.id}>
@@ -480,7 +514,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
                     type="button"
                     onClick={() => addRecipeToPlan(recipe.id)}
                     disabled={alreadyPlannedForDay}
-                    className="h-11 rounded-lg bg-leaf px-4 text-sm font-bold text-white transition hover:bg-leaf/90 disabled:cursor-not-allowed disabled:bg-slate-300"
+                    className="h-10 rounded-lg bg-leaf px-3 text-sm font-bold text-white transition hover:bg-leaf/90 disabled:cursor-not-allowed disabled:bg-slate-300 sm:h-11 sm:px-4"
                   >
                     {alreadyPlannedForDay ? `已加入${weekdayLabels[selectedDay]}` : "加入本周菜单"}
                   </button>
@@ -528,19 +562,32 @@ export function MenuApp({ recipes }: MenuAppProps) {
                             const recipe = recipesById[item.recipeId];
 
                             return (
-                              <li
-                                key={item.id}
-                                className="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2"
-                              >
-                                <span className="min-w-0 text-sm font-medium">{recipe?.name}</span>
-                                <button
-                                  type="button"
-                                  onClick={() => removePlannedDish(item.id)}
-                                  className="h-8 w-8 shrink-0 rounded-lg border border-line bg-white text-slate-500 transition hover:border-berry hover:text-berry"
-                                  aria-label={`移除${recipe?.name}`}
+                              <li key={item.id} className="grid gap-2 rounded-lg bg-slate-50 px-3 py-2">
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="min-w-0 text-sm font-medium">{recipe?.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => removePlannedDish(item.id)}
+                                    className="h-8 rounded-lg border border-line bg-white px-2.5 text-xs font-bold text-slate-500 transition hover:border-berry hover:text-berry"
+                                    aria-label={`删除${recipe?.name}`}
+                                  >
+                                    删除
+                                  </button>
+                                </div>
+                                <select
+                                  value={item.day}
+                                  onChange={(event) =>
+                                    updatePlannedDishDay(item.id, event.target.value as WeekdayId)
+                                  }
+                                  className="h-9 rounded-lg border border-line bg-white px-2 text-sm font-semibold text-slate-700"
+                                  aria-label={`修改${recipe?.name}的食用日期`}
                                 >
-                                  ×
-                                </button>
+                                  {weekdays.map((weekday) => (
+                                    <option key={weekday.id} value={weekday.id}>
+                                      {weekday.label}
+                                    </option>
+                                  ))}
+                                </select>
                               </li>
                             );
                           })}
@@ -607,7 +654,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
                   菜品
                 </h3>
                 <ul className="grid gap-1">
-                  {submittedEntry.items.map((item, index) => (
+                  {sortItemsByDay(submittedEntry.items).map((item, index) => (
                     <li key={`${submittedEntry.id}-result-${index}`} className="text-sm text-slate-700">
                       {weekdayLabels[item.day]} · {item.recipeName}
                     </li>
@@ -703,7 +750,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
                     </div>
                   </div>
                   <ul className="grid gap-1">
-                    {entry.items.map((item, index) => (
+                    {sortItemsByDay(entry.items).map((item, index) => (
                       <li key={`${entry.id}-${item.recipeId}-${index}`} className="text-sm text-slate-700">
                         {weekdayLabels[item.day]} · {item.recipeName}
                       </li>

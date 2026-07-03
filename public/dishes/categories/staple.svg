@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">主食类</title>
+  <desc id="desc">主食类分类菜品插画</desc>
+  <defs>
+    <radialGradient id="light" cx="36%" cy="20%" r="78%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".78"/>
+      <stop offset="58%" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="480" rx="32" fill="#f3e2c7"/>
+  <rect width="640" height="480" rx="32" fill="url(#light)"/>
+  <circle cx="110" cy="98" r="46" fill="#ffffff" opacity=".32"/>
+  <circle cx="548" cy="112" r="64" fill="#ffffff" opacity=".22"/>
+  <circle cx="520" cy="370" r="32" fill="#b98248" opacity=".16"/>
+  
+  <ellipse cx="320" cy="370" rx="210" ry="36" fill="#241f1b" opacity=".14"/>
+  <ellipse cx="320" cy="286" rx="210" ry="112" fill="#fff8ed"/>
+  <ellipse cx="320" cy="288" rx="168" ry="80" fill="#f5efe2"/>
+  <path d="M206 274c42-74 184-92 244-14 34 44 10 102-60 122-90 26-202-18-184-108Z" fill="#d5a868"/>
+  <path d="M244 248c56-34 142-30 182 20" fill="none" stroke="#fff5dc" stroke-width="16" stroke-linecap="round" opacity=".85"/>
+  <path d="M246 300c54-28 132-26 176 16" fill="none" stroke="#fff5dc" stroke-width="14" stroke-linecap="round" opacity=".72"/>
+  <circle cx="280" cy="286" r="18" fill="#ef6b4b"/>
+  <circle cx="352" cy="258" r="16" fill="#5b9c62"/>
+  <circle cx="392" cy="314" r="14" fill="#f1cf55"/>
+</svg>

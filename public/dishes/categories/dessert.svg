@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">甜品</title>
+  <desc id="desc">甜品分类菜品插画</desc>
+  <defs>
+    <radialGradient id="light" cx="36%" cy="20%" r="78%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".78"/>
+      <stop offset="58%" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="480" rx="32" fill="#f7dde7"/>
+  <rect width="640" height="480" rx="32" fill="url(#light)"/>
+  <circle cx="110" cy="98" r="46" fill="#ffffff" opacity=".32"/>
+  <circle cx="548" cy="112" r="64" fill="#ffffff" opacity=".22"/>
+  <circle cx="520" cy="370" r="32" fill="#c65f86" opacity=".16"/>
+  
+  <ellipse cx="320" cy="370" rx="210" ry="36" fill="#241f1b" opacity=".14"/>
+  <ellipse cx="320" cy="286" rx="210" ry="112" fill="#fff8ed"/>
+  <ellipse cx="320" cy="288" rx="168" ry="80" fill="#f5efe2"/>
+  <path d="M224 330h194l-30 58H254l-30-58Z" fill="#8f5b45"/>
+  <path d="M236 250h170l12 80H224l12-80Z" fill="#f3bfd1"/>
+  <path d="M246 250c20-52 120-66 150 0H246Z" fill="#fff5eb"/>
+  <circle cx="320" cy="204" r="20" fill="#d94f5a"/>
+  <path d="M258 286h120" stroke="#fff6ea" stroke-width="14" stroke-linecap="round" opacity=".8"/>
+</svg>

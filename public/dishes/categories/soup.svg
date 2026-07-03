@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">汤类</title>
+  <desc id="desc">汤类分类菜品插画</desc>
+  <defs>
+    <radialGradient id="light" cx="36%" cy="20%" r="78%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".78"/>
+      <stop offset="58%" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="480" rx="32" fill="#e5e0f3"/>
+  <rect width="640" height="480" rx="32" fill="url(#light)"/>
+  <circle cx="110" cy="98" r="46" fill="#ffffff" opacity=".32"/>
+  <circle cx="548" cy="112" r="64" fill="#ffffff" opacity=".22"/>
+  <circle cx="520" cy="370" r="32" fill="#7b6eb0" opacity=".16"/>
+  
+  <ellipse cx="320" cy="370" rx="210" ry="36" fill="#241f1b" opacity=".14"/>
+  <ellipse cx="320" cy="286" rx="210" ry="112" fill="#fff8ed"/>
+  <ellipse cx="320" cy="288" rx="168" ry="80" fill="#f5efe2"/>
+  <path d="M182 258h276c-4 82-58 130-138 130s-134-48-138-130Z" fill="#7867a8"/>
+  <ellipse cx="320" cy="258" rx="138" ry="42" fill="#a893ce"/>
+  <ellipse cx="320" cy="252" rx="104" ry="26" fill="#f3c66e"/>
+  <path d="M252 162c-22 28 22 34 2 64M320 148c-28 32 26 40-2 78M388 164c-24 28 22 34 2 64" fill="none" stroke="#fff7ec" stroke-width="14" stroke-linecap="round" opacity=".8"/>
+  <circle cx="278" cy="250" r="12" fill="#5aae6e"/>
+  <circle cx="354" cy="246" r="10" fill="#d95647"/>
+</svg>

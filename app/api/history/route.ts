@@ -27,6 +27,7 @@ type HistoryEntry = {
   id: string;
   submittedAt: string;
   updatedAt: string;
+  note: string;
   items: HistoryItem[];
   ingredientSummary: IngredientUse[];
 };
@@ -109,18 +110,23 @@ function normalizeItems(value: unknown): HistoryItem[] {
   return sortItemsByDay(items);
 }
 
+function normalizeNote(value: unknown) {
+  return typeof value === "string" ? value.trim().slice(0, 500) : "";
+}
+
 async function readStore(): Promise<Store> {
   try {
     const raw = await readFile(dataFile, "utf8");
     const parsed = JSON.parse(raw) as Store;
 
     return {
-      historyEntries: Array.isArray(parsed.historyEntries)
-        ? parsed.historyEntries.map((entry) => ({
-            ...entry,
-            items: sortItemsByDay(entry.items)
-          }))
-        : []
+          historyEntries: Array.isArray(parsed.historyEntries)
+            ? parsed.historyEntries.map((entry) => ({
+                ...entry,
+                note: typeof entry.note === "string" ? entry.note : "",
+                items: sortItemsByDay(entry.items)
+              }))
+            : []
     };
   } catch {
     return { historyEntries: [] };
@@ -169,13 +175,15 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { items?: unknown };
+    const body = (await request.json()) as { items?: unknown; note?: unknown };
     const items = normalizeItems(body.items);
+    const note = normalizeNote(body.note);
     const now = new Date().toISOString();
     const entry: HistoryEntry = {
       id: randomUUID(),
       submittedAt: now,
       updatedAt: now,
+      note,
       items,
       ingredientSummary: summarizeIngredients(items)
     };
@@ -193,13 +201,14 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const body = (await request.json()) as { id?: string; items?: unknown };
+    const body = (await request.json()) as { id?: string; items?: unknown; note?: unknown };
 
     if (!body.id) {
       return badRequest("缺少要修改的记录。");
     }
 
     const items = normalizeItems(body.items);
+    const note = normalizeNote(body.note);
     const now = new Date().toISOString();
     let updatedEntry: HistoryEntry | undefined;
 
@@ -211,6 +220,7 @@ export async function PUT(request: Request) {
       }
 
       entry.updatedAt = now;
+      entry.note = note;
       entry.items = items;
       entry.ingredientSummary = summarizeIngredients(items);
       updatedEntry = entry;

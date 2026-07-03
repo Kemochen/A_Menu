@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "import:menu": "node scripts/import-menu-library.mjs",
     "clean:synology": "node scripts/clean-synology.mjs",
     "build": "node scripts/clean-synology.mjs && next build"
   },

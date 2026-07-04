@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Recipe } from "@/data/recipes";
 import { weatherLabels, weatherSymbols } from "@/data/recipes";
 
@@ -259,30 +259,51 @@ export function MenuApp({ recipes }: MenuAppProps) {
   );
   const ingredientCategoryMap = useMemo(() => buildIngredientCategoryMap(recipes), [recipes]);
 
-  useEffect(() => {
-    let isMounted = true;
+  const loadHistory = useCallback(async (showLoading = false) => {
+    if (showLoading) {
+      setIsLoadingHistory(true);
+    }
 
-    readHistory()
-      .then((entries) => {
-        if (isMounted) {
-          setHistoryEntries(entries);
-        }
-      })
-      .catch((error) => {
-        if (isMounted) {
-          setNotice(error instanceof Error ? error.message : "读取历史记录失败。");
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setIsLoadingHistory(false);
-        }
-      });
+    try {
+      const entries = await readHistory();
+      setHistoryEntries(entries);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "读取历史记录失败。");
+    } finally {
+      if (showLoading) {
+        setIsLoadingHistory(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadHistory(true);
+  }, [loadHistory]);
+
+  useEffect(() => {
+    if (activePanel === "history") {
+      void loadHistory(true);
+    }
+  }, [activePanel, loadHistory]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      void loadHistory(false);
+    }, 10_000);
+
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") {
+        void loadHistory(false);
+      }
+    };
+
+    document.addEventListener("visibilitychange", refreshWhenVisible);
 
     return () => {
-      isMounted = false;
+      window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
-  }, []);
+  }, [loadHistory]);
 
   const selectedRecipe = selectedRecipeId ? recipesById[selectedRecipeId] : null;
 

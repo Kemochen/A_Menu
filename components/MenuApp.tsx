@@ -593,7 +593,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
         })}
       </div>
 
-      <section className="grid grid-cols-3 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5">
+      <section className="grid grid-cols-3 gap-2 min-[600px]:grid-cols-6 sm:gap-3">
         {paginatedRecipes.map((recipe) => (
           <button
             key={recipe.id}

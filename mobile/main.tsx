@@ -6,6 +6,7 @@ import { recipes } from "@/data/recipes";
 import { normalizeServerUrl, serverStorageKey } from "./server-url.mjs";
 import { NativeControls, nativeControlsAvailable, type NativeLayout } from "./native-controls";
 import "@/app/globals.css";
+import "@/app/menu.css";
 import "./native.css";
 
 function readSavedServer() {
@@ -25,7 +26,7 @@ function MobileApp() {
   const [error, setError] = useState("");
   const dialog = useRef<HTMLDialogElement>(null);
   const [selectedCount, setSelectedCount] = useState(0);
-  const [command, setCommand] = useState<{ id: number; action: "browse" | "history" | "plan" } | null>(null);
+  const [command, setCommand] = useState<{ id: number; action: "browse" | "history" | "plan" | "add" } | null>(null);
   const [layout, setLayout] = useState<NativeLayout>({});
   const commandId = useRef(0);
   const currentServer = useRef(server);
@@ -41,7 +42,7 @@ function MobileApp() {
           setServerInput(currentServer.current);
           setError("");
           setSettingsOpen(true);
-        } else if (action === "browse" || action === "history" || action === "plan") {
+        } else if (action === "browse" || action === "history" || action === "plan" || action === "add") {
           setCommand({ id: ++commandId.current, action });
         }
       });
@@ -113,7 +114,8 @@ function MobileApp() {
           key={server}
           recipes={recipes}
           historyEndpoint={`${server}/api/history`}
-          presentation="book"
+          recipesEndpoint={`${server}/api/recipes`}
+          presentation={layout.foldable ? "book" : "standard"}
           nativeToolbar={nativeControlsAvailable}
           command={command}
           division={layout.division}
@@ -184,6 +186,7 @@ function MobileApp() {
 }
 
 const nativePreview = import.meta.env.DEV && new URLSearchParams(location.search).has("native-preview");
+const duoPreview = import.meta.env.DEV && new URLSearchParams(location.search).has("duo-preview");
 createRoot(document.getElementById("root")!).render(
-  Capacitor.isNativePlatform() || nativePreview ? <MobileApp /> : <MenuApp recipes={recipes} presentation="book" />
+  Capacitor.isNativePlatform() || nativePreview ? <MobileApp /> : <MenuApp recipes={recipes} presentation={duoPreview ? "book" : "standard"} />
 );

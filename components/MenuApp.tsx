@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { Grid3X3, History, Settings, ShoppingBasket } from "lucide-react";
+import { ChevronLeft, ChevronRight, Grid3X3, History, Plus, Search, Settings, ShoppingBasket, X } from "lucide-react";
+import { RecipeForm } from "@/components/RecipeForm";
+import { DishImage } from "@/components/DishImage";
 import type { Recipe } from "@/data/recipes";
 import { weatherLabels, weatherSymbols } from "@/data/recipes";
 import { getBookPages, resolveBookSplit, type BookDivision, type BookSplit } from "@/lib/book-layout.mjs";
@@ -48,16 +50,17 @@ type HistoryResponse = {
 type MenuAppProps = {
   recipes: Recipe[];
   historyEndpoint?: string;
+  recipesEndpoint?: string;
   presentation?: "standard" | "book";
   nativeToolbar?: boolean;
-  command?: { id: number; action: "browse" | "history" | "plan" } | null;
+  command?: { id: number; action: "browse" | "history" | "plan" | "add" } | null;
   division?: BookDivision | null;
   onSelectionCountChange?: (count: number) => void;
   onSettings?: () => void;
 };
 
 const allCategory = "全部";
-const recipesPerPage = 21;
+const recipesPerPage = 9;
 
 const ingredientCategoryOrder = [
   "蔬菜",
@@ -247,8 +250,9 @@ async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown, his
 }
 
 export function MenuApp({
-  recipes,
+  recipes: initialRecipes,
   historyEndpoint = "/api/history",
+  recipesEndpoint = "/api/recipes",
   presentation = "standard",
   nativeToolbar = false,
   command,
@@ -256,10 +260,50 @@ export function MenuApp({
   onSelectionCountChange,
   onSettings
 }: MenuAppProps) {
+  const [recipes, setRecipes] = useState(initialRecipes);
+  const [recipeFormOpen, setRecipeFormOpen] = useState(false);
+  const [recipeError, setRecipeError] = useState("");
+  const recipeRequestId = useRef(0);
+  const loadRecipes = useCallback(async () => {
+    const requestId = ++recipeRequestId.current;
+    try {
+      const response = await fetch(recipesEndpoint, { cache: "no-store" });
+      const data = await response.json() as { recipes?: Recipe[]; error?: string };
+      if (!response.ok || !Array.isArray(data.recipes)) throw new Error(data.error ?? "读取菜品库失败，请更新菜单服务器。");
+      if (requestId === recipeRequestId.current) { setRecipes(data.recipes); setRecipeError(""); }
+    } catch (error) {
+      if (requestId === recipeRequestId.current) setRecipeError(error instanceof Error ? error.message : "读取菜品库失败。");
+    }
+  }, [recipesEndpoint]);
+  useEffect(() => {
+    void loadRecipes();
+    const refresh = () => { if (document.visibilityState === "visible") void loadRecipes(); };
+    const interval = window.setInterval(refresh, 10_000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => { ++recipeRequestId.current; window.clearInterval(interval); document.removeEventListener("visibilitychange", refresh); };
+  }, [loadRecipes]);
+
+  async function createRecipe(input: unknown) {
+    const response = await fetch(recipesEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    const data = await response.json() as { recipe?: Recipe; error?: string };
+    if (!response.ok || !data.recipe) throw new Error(data.error ?? "保存菜品失败。");
+    ++recipeRequestId.current;
+    const recipe = data.recipe;
+    setRecipes((items) => [...items.filter((item) => item.id !== recipe.id), recipe]);
+    setRecipeError("");
+    setRecipeFormOpen(false);
+    setActivePanel(null);
+    setActiveCategory(recipe.category);
+    setSearch("");
+    setCurrentPage(1);
+    setSelectedRecipeId(recipe.id);
+    setNotice("菜品已保存，其他设备也能看到。");
+  }
   const isBook = presentation === "book";
   const bookRef = useRef<HTMLDivElement>(null);
   const [bookSplit, setBookSplit] = useState<BookSplit | null>(null);
   const [activeCategory, setActiveCategory] = useState(allCategory);
+  const [search, setSearch] = useState("");
   const [plannedDishes, setPlannedDishes] = useState<PlannedDish[]>([]);
   const [historyEntries, setHistoryEntries] = useState<HistoryEntry[]>([]);
   const [selectedDayByRecipe, setSelectedDayByRecipe] = useState<Record<string, WeekdayId>>({});
@@ -281,6 +325,8 @@ export function MenuApp({
   useEffect(() => {
     if (!command) return;
     setSelectedRecipeId(null);
+    setRecipeFormOpen(command.action === "add");
+    if (command.action === "add") { setActivePanel(null); return; }
     setActivePanel(command.action === "browse" ? null : command.action);
   }, [command]);
 
@@ -387,16 +433,20 @@ export function MenuApp({
   );
 
   const filteredRecipes = useMemo(
-    () =>
-      activeCategory === allCategory
-        ? recipes
-        : recipes.filter((recipe) => recipe.category === activeCategory),
-    [activeCategory, recipes]
+    () => {
+      const terms = search.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+      return recipes.filter((recipe) => {
+        if (activeCategory !== allCategory && recipe.category !== activeCategory) return false;
+        const content = [recipe.name, recipe.category, ...recipe.ingredients, ...recipe.tags].join(" ").toLocaleLowerCase();
+        return terms.every((term) => content.includes(term));
+      });
+    },
+    [activeCategory, recipes, search]
   );
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeCategory]);
+  }, [activeCategory, search]);
 
   const bookPages = useMemo(() => getBookPages(filteredRecipes, currentPage), [currentPage, filteredRecipes]);
   const pageCount = isBook ? bookPages.pageCount : Math.max(1, Math.ceil(filteredRecipes.length / recipesPerPage));
@@ -593,28 +643,28 @@ export function MenuApp({
         key={recipe.id}
         type="button"
         onClick={() => setSelectedRecipeId(recipe.id)}
-        className={`${isBook ? "book-recipe " : ""}overflow-hidden rounded-lg border border-line bg-white text-left shadow-soft transition hover:border-leaf`}
+        className="recipe-tile"
       >
-        <div className={isBook ? "book-recipe-image relative bg-slate-100" : "relative h-20 bg-slate-100 sm:h-32 lg:h-36"}>
-          <img src={recipe.image} alt={recipe.name} className="h-full w-full object-cover" />
+        <div className="recipe-thumbnail">
+          <DishImage recipe={recipe} />
           <span
-            className={`absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-md bg-white/95 text-sm shadow-soft ${isBook ? "" : "sm:right-2 sm:top-2 sm:h-8 sm:w-8 sm:rounded-lg sm:text-base"}`}
+            className="recipe-weather"
             title={weatherLabels[recipe.weather]}
             aria-label={weatherLabels[recipe.weather]}
           >
             {weatherSymbols[recipe.weather]}
           </span>
-        </div>
-        <div className={`grid gap-1 p-2 ${isBook ? "" : "sm:p-3"}`}>
-          <h2 className={`text-xs font-bold leading-snug ${isBook ? "" : "sm:text-base"}`}>{recipe.name}</h2>
-          <p className="text-xs font-medium text-slate-500">
-            上次食用：{formatRelativeTime(lastEatenByRecipe[recipe.id])}
-          </p>
           {plannedDaysByRecipe[recipe.id]?.length ? (
-            <p className="rounded-md bg-leaf/10 px-1.5 py-1 text-xs font-bold text-leaf">
-              已选：{plannedDaysByRecipe[recipe.id].map((day) => weekdayLabels[day]).join("、")}
-            </p>
+            <span className="recipe-selected" title={`已选：${plannedDaysByRecipe[recipe.id].map((day) => weekdayLabels[day]).join("、")}`}>
+              {plannedDaysByRecipe[recipe.id].length === 1 ? weekdayLabels[plannedDaysByRecipe[recipe.id][0]] : `已选 ${plannedDaysByRecipe[recipe.id].length} 天`}
+            </span>
           ) : null}
+        </div>
+        <div className="recipe-caption">
+          <h2>{recipe.name}</h2>
+          <p>
+            上次：{formatRelativeTime(lastEatenByRecipe[recipe.id])}
+          </p>
         </div>
       </button>
     );
@@ -628,44 +678,30 @@ export function MenuApp({
 
   return (
     <main
-      className={`${isBook ? `book-menu ${nativeToolbar ? "" : "book-menu-with-rail"} ` : ""}mx-auto min-h-screen w-full max-w-6xl px-3 pb-8 pt-3 text-ink sm:px-6 lg:py-8`}
+      className={`menu-app ${isBook ? "book-menu" : "standard-menu"} ${nativeToolbar ? "menu-native-toolbar" : "menu-web-toolbar"}`}
+      data-navigation={isBook ? "side" : "bottom"}
       style={isBook ? bookStyle : undefined}
     >
-      <header className="sticky top-0 z-20 -mx-3 mb-4 border-b border-line bg-white/95 px-3 py-3 backdrop-blur sm:static sm:mx-0 sm:border-b-0 sm:bg-transparent sm:px-0 sm:py-0">
-        <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-leaf">A Menu</p>
-            <h1 className={`text-2xl font-bold leading-tight ${isBook ? "" : "sm:text-4xl"}`}>本周菜单</h1>
-          </div>
-          <div className={`${isBook ? "hidden" : "flex"} shrink-0 gap-2`}>
-            <button
-              type="button"
-              onClick={() => setActivePanel("history")}
-              className="h-10 rounded-lg border border-line bg-white px-3 text-sm font-bold text-slate-700 shadow-soft"
-            >
-              历史
-            </button>
-            <button
-              type="button"
-              onClick={() => setActivePanel("plan")}
-              className="h-10 rounded-lg bg-ink px-3 text-sm font-bold text-white shadow-soft"
-            >
-              待提交 {plannedDishes.length}
-            </button>
-          </div>
-        </div>
-        <p className={`${isBook ? "hidden" : "mt-2 text-sm leading-6 text-slate-600"}`}>
-          点开菜品图片查看食材，再安排到本周菜单。
-        </p>
+      <header className="menu-header menu-right-controls">
+        <p className="menu-brand">A Menu</p>
+        <h1>菜品库</h1>
       </header>
 
       {notice ? (
-        <p className="mb-3 rounded-lg border border-line bg-white p-3 text-sm font-medium text-slate-700 shadow-soft">
+        <p role="status" className="menu-notice menu-right-controls">
           {notice}
         </p>
       ) : null}
 
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1" aria-label="菜品分类">
+      {recipeError ? <div role="alert" className="menu-right-controls mb-3 flex items-center justify-between gap-2 text-sm text-red-700"><span>{recipeError}</span><button type="button" onClick={() => void loadRecipes()} className="min-h-11 shrink-0 px-2 font-semibold">重试</button></div> : null}
+
+      <div className="menu-search menu-right-controls" role="search">
+        <Search size={18} aria-hidden="true" />
+        <input aria-label="搜索菜名、食材或标签" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="搜索菜名、食材或标签" />
+        {search ? <button type="button" title="清空搜索" aria-label="清空搜索" onClick={() => setSearch("")}><X size={17} /></button> : null}
+      </div>
+
+      <div className="menu-categories menu-right-controls" aria-label="菜品分类">
         {categories.map((category) => {
           const isActive = category === activeCategory;
 
@@ -674,11 +710,7 @@ export function MenuApp({
               key={category}
               type="button"
               onClick={() => setActiveCategory(category)}
-              className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
-                isActive
-                  ? "border-leaf bg-leaf text-white"
-                  : "border-line bg-white text-slate-700 hover:border-leaf hover:text-leaf"
-              }`}
+              aria-pressed={isActive}
             >
               {category}
             </button>
@@ -696,36 +728,39 @@ export function MenuApp({
           </section>
         </div>
       ) : (
-        <section className="grid grid-cols-3 gap-2 min-[600px]:grid-cols-6 sm:gap-3">
+        <section className="recipe-grid" aria-label="菜品">
           {paginatedRecipes.map(renderRecipe)}
         </section>
       )}
 
-      {isBook && !nativeToolbar ? (
-        <nav className="book-action-rail" aria-label="菜单功能">
-          <button type="button" title="菜品" aria-label="菜品" onClick={() => { setActivePanel(null); setSelectedRecipeId(null); }}>
-            <Grid3X3 size={21} aria-hidden="true" />
+      {!filteredRecipes.length ? <p className="menu-empty menu-right-controls">没有找到符合条件的菜品</p> : null}
+
+      {!nativeToolbar ? (
+        <nav className="menu-action-nav" aria-label="菜单功能">
+          <button type="button" title="菜品库" aria-label="菜品库" aria-pressed={!activePanel && !recipeFormOpen} onClick={() => { setRecipeFormOpen(false); setActivePanel(null); setSelectedRecipeId(null); }}>
+            <Grid3X3 size={21} aria-hidden="true" /><span>菜品库</span>
           </button>
-          <button type="button" title="历史菜谱" aria-label="历史菜谱" aria-pressed={activePanel === "history"} onClick={() => { setSelectedRecipeId(null); setActivePanel("history"); }}>
-            <History size={21} aria-hidden="true" />
+          <button type="button" title="历史菜谱" aria-label="历史菜谱" aria-pressed={activePanel === "history"} onClick={() => { setRecipeFormOpen(false); setSelectedRecipeId(null); setActivePanel("history"); }}>
+            <History size={21} aria-hidden="true" /><span>历史</span>
           </button>
-          <button type="button" title={`已选菜单 ${plannedDishes.length}`} aria-label={`已选菜单 ${plannedDishes.length}`} aria-pressed={activePanel === "plan"} onClick={() => { setSelectedRecipeId(null); setActivePanel("plan"); }}>
-            <ShoppingBasket size={21} aria-hidden="true" />
-            {plannedDishes.length ? <span className="book-rail-badge">{plannedDishes.length}</span> : null}
+          <button type="button" title={`已选菜单 ${plannedDishes.length}`} aria-label={`已选菜单 ${plannedDishes.length}`} aria-pressed={activePanel === "plan"} onClick={() => { setRecipeFormOpen(false); setSelectedRecipeId(null); setActivePanel("plan"); }}>
+            <ShoppingBasket size={21} aria-hidden="true" /><span>已选菜单</span>
+            {plannedDishes.length ? <span className="menu-nav-badge">{plannedDishes.length}</span> : null}
           </button>
-          {onSettings ? <button type="button" title="服务器设置" aria-label="服务器设置" onClick={onSettings}><Settings size={21} aria-hidden="true" /></button> : null}
+          <button type="button" title="新增菜品" aria-label="新增菜品" aria-pressed={recipeFormOpen} onClick={() => { setSelectedRecipeId(null); setActivePanel(null); setRecipeFormOpen(true); }}><Plus size={21} aria-hidden="true" /><span>添加</span></button>
+          {onSettings ? <button type="button" title="服务器设置" aria-label="服务器设置" onClick={onSettings}><Settings size={21} aria-hidden="true" /><span>设置</span></button> : null}
         </nav>
       ) : null}
 
       {pageCount > 1 ? (
-        <nav className="mt-4 flex items-center justify-between gap-3" aria-label="菜品分页">
+        <nav className="menu-pagination menu-right-controls" aria-label="菜品分页">
           <button
             type="button"
             onClick={() => setCurrentPage((page) => Math.max(1, page - pageStep))}
             disabled={currentPage === 1}
-            className="h-10 rounded-lg border border-line bg-white px-4 text-sm font-bold text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+            title="上一页" aria-label="上一页"
           >
-            上一页
+            <ChevronLeft size={21} />
           </button>
           <span className="text-sm font-semibold text-slate-600">
             {currentPage}{isBook && bookSplit && bookPages.extra.length ? `–${Math.min(pageCount, currentPage + 1)}` : ""} / {pageCount}
@@ -734,22 +769,20 @@ export function MenuApp({
             type="button"
             onClick={() => setCurrentPage((page) => Math.min(pageCount, page + pageStep))}
             disabled={currentPage + pageStep > pageCount}
-            className="h-10 rounded-lg border border-line bg-white px-4 text-sm font-bold text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+            title="下一页" aria-label="下一页"
           >
-            下一页
+            <ChevronRight size={21} />
           </button>
         </nav>
       ) : null}
+
+      {recipeFormOpen ? <RecipeForm categories={categories.filter((category) => category !== allCategory)} onClose={() => setRecipeFormOpen(false)} onCreate={createRecipe} /> : null}
 
       {selectedRecipe ? (
         <div className="fixed inset-0 z-40 bg-ink/45 px-3 py-4" role="dialog" aria-modal="true">
           <div className="mx-auto grid max-h-full max-w-md overflow-hidden rounded-lg bg-white shadow-soft">
             <div className="relative h-40 bg-slate-100 sm:h-52">
-              <img
-                src={selectedRecipe.image}
-                alt={selectedRecipe.name}
-                className="h-full w-full object-cover"
-              />
+              <DishImage recipe={selectedRecipe} eager />
               <button
                 type="button"
                 onClick={() => setSelectedRecipeId(null)}

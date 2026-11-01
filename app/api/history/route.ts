@@ -3,6 +3,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { NextResponse } from "next/server";
 import { recipes } from "@/data/recipes";
+import type { Recipe } from "@/data/recipes";
+import { recipeStore } from "@/lib/recipe-store.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,11 +50,10 @@ const weekdayList: WeekdayId[] = [
 const weekdays = new Set<WeekdayId>(weekdayList);
 const weekdayOrder = new Map(weekdayList.map((day, index) => [day, index]));
 
-const recipesById = new Map(recipes.map((recipe) => [recipe.id, recipe]));
 const dataFile = process.env.DATA_FILE ?? join(process.cwd(), "storage", "menu-history.json");
 let writeQueue = Promise.resolve();
 
-function summarizeIngredients(items: HistoryItem[]) {
+function summarizeIngredients(items: HistoryItem[], recipesById: Map<string, Recipe>) {
   const counts = new Map<string, number>();
 
   for (const item of items) {
@@ -75,7 +76,7 @@ function sortItemsByDay<T extends { day: WeekdayId }>(items: T[]) {
   return [...items].sort((a, b) => Number(weekdayOrder.get(a.day)) - Number(weekdayOrder.get(b.day)));
 }
 
-function normalizeItems(value: unknown): HistoryItem[] {
+function normalizeItems(value: unknown, recipesById: Map<string, Recipe>): HistoryItem[] {
   if (!Array.isArray(value)) {
     throw new Error("请选择至少一道菜。");
   }
@@ -175,8 +176,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const recipesById = new Map((await recipeStore.list(recipes)).map((recipe) => [recipe.id, recipe]));
     const body = (await request.json()) as { items?: unknown; note?: unknown };
-    const items = normalizeItems(body.items);
+    const items = normalizeItems(body.items, recipesById);
     const note = normalizeNote(body.note);
     const now = new Date().toISOString();
     const entry: HistoryEntry = {
@@ -185,7 +187,7 @@ export async function POST(request: Request) {
       updatedAt: now,
       note,
       items,
-      ingredientSummary: summarizeIngredients(items)
+      ingredientSummary: summarizeIngredients(items, recipesById)
     };
 
     const historyEntries = await mutateStore((store) => {
@@ -201,13 +203,14 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const recipesById = new Map((await recipeStore.list(recipes)).map((recipe) => [recipe.id, recipe]));
     const body = (await request.json()) as { id?: string; items?: unknown; note?: unknown };
 
     if (!body.id) {
       return badRequest("缺少要修改的记录。");
     }
 
-    const items = normalizeItems(body.items);
+    const items = normalizeItems(body.items, recipesById);
     const note = normalizeNote(body.note);
     const now = new Date().toISOString();
     let updatedEntry: HistoryEntry | undefined;
@@ -222,7 +225,7 @@ export async function PUT(request: Request) {
       entry.updatedAt = now;
       entry.note = note;
       entry.items = items;
-      entry.ingredientSummary = summarizeIngredients(items);
+      entry.ingredientSummary = summarizeIngredients(items, recipesById);
       updatedEntry = entry;
       store.historyEntries = sortHistory(store.historyEntries);
 

@@ -1,7 +1,7 @@
 import { Capacitor, registerPlugin, type PluginListenerHandle } from "@capacitor/core";
 
-export type MenuCommand = "browse" | "history" | "plan" | "settings";
-export type NativeLayout = { division?: { x: number; width: number } };
+export type MenuCommand = "browse" | "history" | "plan" | "add" | "settings";
+export type NativeLayout = { foldable?: boolean; division?: { x: number; width: number } };
 
 interface NativeMenuControls {
   setState(state: { hasServer: boolean; selectedCount: number }): Promise<void>;

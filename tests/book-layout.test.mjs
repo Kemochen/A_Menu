@@ -42,11 +42,15 @@ test("uses available container space and preserves real asymmetric hinge geometr
 });
 
 test("places the existing leaf on the right and new dishes on the left without duplicating the app", () => {
-  const css = readFileSync(new URL("../mobile/native.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../app/menu.css", import.meta.url), "utf8");
   assert.ok(css.includes('grid-template-areas: "extra primary"'));
   const component = readFileSync(new URL("../components/MenuApp.tsx", import.meta.url), "utf8");
   assert.ok(component.includes("ResizeObserver"));
   assert.ok(component.includes("bookPages.primary.map(renderRecipe)"));
+  assert.equal((component.match(/role="search"/g) ?? []).length, 1);
+  assert.equal((component.match(/aria-label="菜品分页"/g) ?? []).length, 1);
+  assert.ok(css.includes('.book-menu .menu-right-controls'));
+  assert.ok(css.includes('margin-left: auto'));
 });
 
 test("uses system-owned navigation bars, a native selection badge, and scene-relative fold regions", () => {
@@ -62,4 +66,16 @@ test("uses system-owned navigation bars, a native selection badge, and scene-rel
   const ignored = readFileSync(new URL("../.gitignore", import.meta.url), "utf8").split(/\r?\n/);
   assert.ok(ignored.includes("/ios/"));
   assert.ok(!ignored.includes("ios"));
+});
+
+test("uses bottom navigation for regular phones and actual fold regions for native book mode", () => {
+  const css = readFileSync(new URL("../app/menu.css", import.meta.url), "utf8");
+  assert.ok(css.includes('[data-navigation="bottom"] .menu-action-nav'));
+  assert.ok(css.includes('[data-navigation="side"] .menu-action-nav'));
+  assert.ok(css.includes("grid-template-columns: repeat(3, minmax(0, 1fr))"));
+  const mobile = readFileSync(new URL("../mobile/main.tsx", import.meta.url), "utf8");
+  assert.ok(mobile.includes('presentation={layout.foldable ? "book" : "standard"}'));
+  assert.ok(mobile.includes('key={server}'));
+  const swift = readFileSync(new URL("../mobile/ios/SceneDelegate.swift", import.meta.url), "utf8");
+  assert.ok(swift.includes('result["foldable"] = !regions.isEmpty'));
 });

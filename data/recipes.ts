@@ -1,3 +1,5 @@
+import { dishPhotos } from "./dish-photos";
+
 export type WeatherSuitability = "cold" | "hot" | "both";
 
 export type Recipe = {
@@ -24,7 +26,7 @@ export const weatherLabels: Record<WeatherSuitability, string> = {
   both: "冷热都适合"
 };
 
-export const recipes: Recipe[] = [
+const recipeLibrary: Recipe[] = [
   {
     id: "fanqie_niunan",
     name: "番茄牛腩",
@@ -816,3 +818,8 @@ export const recipes: Recipe[] = [
     ingredientTypes: {"豆结":"豆制品","咸肉":"肉类","排骨":"肉类","春笋":"蔬菜"}
   }
 ];
+
+export const recipes: Recipe[] = recipeLibrary.map((recipe) => ({
+  ...recipe,
+  image: dishPhotos[recipe.id] ?? recipe.image
+}));

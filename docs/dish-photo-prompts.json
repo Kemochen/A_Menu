@@ -1,0 +1,301 @@
+{
+  "generator": "Built-in image_gen",
+  "purpose": "59 remaining recipe catalog photos; existing 20 retained",
+  "recipes": [
+    {
+      "id": "qiukui_shanbeizhu",
+      "name": "秋葵扇贝柱",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 秋葵扇贝柱. Chinese stir-fried scallop adductor meats with bright green okra cut into star-shaped cross sections. Several creamy white lightly seared scallop medallions, fresh okra, light glossy sauce. No shrimp or beef. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "sanzhi_menguo",
+      "name": "三汁焖锅",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 三汁焖锅. Chinese three-sauce braised hotpot, chicken wing segments, chicken feet, whole head-on shrimp, enoki mushrooms and potato chunks in rich glossy dark brown sauce. A generous mixed braise, no rice, show the distinct ingredients. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "donggua_gala",
+      "name": "冬瓜蛤蜊",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 冬瓜蛤蜊. Chinese winter melon and clam meat stew, translucent pale winter melon chunks and small shucked clam meats in a delicate clear broth. No large shells or meatballs. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "jianmen_doufu",
+      "name": "煎焖豆腐",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 煎焖豆腐. Chinese pan-fried then braised tofu: thick golden-brown tofu rectangles with soft pale centers in savory sauce and a modest scattering of minced pork. Tofu is the main subject, not tiny mapo-style cubes. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "niunan_gali",
+      "name": "牛腩咖喱",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 牛腩咖喱. Chinese home-style beef brisket curry: tender irregular chunks of beef brisket, potato chunks, carrot and onion in thick warm golden brown curry sauce. No rice in the bowl. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "jiurou_gali",
+      "name": "鸡肉咖喱",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 鸡肉咖喱. Chinese home-style chicken curry: visible chicken thigh pieces, potato chunks, carrot chunks and onion in thick golden yellow curry sauce. Chicken rather than beef, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qinghuajiao_niuwa",
+      "name": "青花椒牛蛙",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 青花椒牛蛙. Chinese green Sichuan pepper bullfrog dish: realistic cooked pale bullfrog leg sections in a light green-peppercorn savory sauce, green Sichuan peppercorn clusters as seasoning. Authentic cooked dish, no live animals, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "hanshi_banfan",
+      "name": "韩式拌饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 韩式拌饭. Korean bibimbap rice bowl: white rice beneath neatly arranged portions of bean sprouts, mushrooms, zucchini strips, carrot strips, thin cooked beef rolls, and a little red gochujang paste. Vegetables and beef clearly separated before mixing. No fried egg, the local recipe has no egg. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "mapo_doufu",
+      "name": "麻婆豆腐",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 麻婆豆腐. Authentic Sichuan mapo tofu: many small silky white tofu cubes with minced pork in red chili-bean sauce, lightly glossy chili oil and tiny scallion garnish. Not large pan-fried tofu rectangles. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "heihujiao_niuliu",
+      "name": "黑胡椒牛柳",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 黑胡椒牛柳. Chinese black pepper beef strips: tender seared beef fillet strips generously coated with cracked black pepper in glossy dark brown pepper sauce. Beef is the main subject, no noodles or rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "jiaogua_chaorou",
+      "name": "茭瓜炒肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 茭瓜炒肉. Chinese stir-fried zucchini with thin beef slices. Pale green zucchini half-moon slices with browned beef ribbons in a light savory sauce. Zucchini, not celery or celtuce. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "lianou_paigutang",
+      "name": "莲藕排骨汤",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 莲藕排骨汤. Chinese lotus root and pork rib soup: thick lotus root slices showing their characteristic round holes, bone-in pork rib segments and a few thin ginger slices in clear pale broth. No noodles. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "xihongshi_chaodan",
+      "name": "西红柿炒蛋",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 西红柿炒蛋. Chinese tomato and scrambled egg stir-fry: soft golden-yellow curds of scrambled egg with juicy red tomato wedges in light tomato juices. No meat, no noodles, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "niupai_yimian",
+      "name": "牛排意面",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 牛排意面. Spaghetti topped with sliced seared beef steak showing a pink center, light garlic oil and a few small dried red chili pieces. Steak strips, not meatballs; no thick tomato sauce. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qingzheng_xueyu",
+      "name": "清蒸鳕鱼",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 清蒸鳕鱼. Chinese steamed cod: two thick delicate white cod portions in light soy cooking juices, finely shredded spring onion on top. Moist flaking cod, not orange salmon, not fried fish. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "gyudon",
+      "name": "牛丼",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 牛丼. Japanese gyudon: white rice topped with very thinly sliced cooked marbled beef and tender onion crescents in light soy broth. Clearly show rice around the edge. No fried egg. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "suanrong_acai",
+      "name": "蒜蓉油麦菜",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 蒜蓉油麦菜. Chinese garlic stir-fried youmaicai, long narrow romaine-like green lettuce leaves and tender stems, bright green, scattered finely minced garlic, lightly glossy. Not broccoli, no meat. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "jungu_jitang",
+      "name": "菌菇鸡汤",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 菌菇鸡汤. Chinese mixed mushroom and chicken clear soup: generous pieces of bone-in cooked chicken with several distinct mushrooms such as shiitake and slender shimeji, pale clear golden broth. No noodles or thick cream. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "sanwenyu_yimian",
+      "name": "三文鱼意面",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 三文鱼意面. Spaghetti with chunks of cooked pink salmon in creamy white wine butter sauce. Light ivory cream sauce coats the pasta, salmon visibly distinct, not beef or meatballs. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "baicai_duntofu",
+      "name": "白菜炖豆腐",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 白菜炖豆腐. Chinese napa cabbage and tofu stew with glass noodles: silky white tofu cubes, tender napa cabbage leaves and translucent vermicelli in light broth. Vegetarian, no pork, no shrimp. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "roumo_doujiao",
+      "name": "肉末豆角",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 肉末豆角. Chinese stir-fried chopped green beans with minced pork. Bright green bean segments about two centimeters long and small browned pork crumbles, lightly dry-fried, savory glossy finish. No whole long beans. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "kao_caihua",
+      "name": "烤菜花",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 烤菜花. Roasted cauliflower florets: creamy white cauliflower with toasted brown edges, lightly seasoned and oven roasted. No broccoli, no meat, no cheese sauce. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "hongshao_niunan",
+      "name": "红烧牛腩",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 红烧牛腩. Chinese red-braised beef brisket: large irregular tender beef chunks with a little rich dark mahogany soy braising sauce, a visible star anise and bay leaf as seasoning. No tomato, no curry, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "xingbaogu_niurou",
+      "name": "杏鲍菇牛肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 杏鲍菇牛肉. Chinese stir-fried king oyster mushroom and beef: thick ivory mushroom slices with tan edges and browned beef strips in savory sauce. Both mushroom and beef clearly visible, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "loco_moco",
+      "name": "loco moco",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of loco moco. Hawaiian loco moco: white rice topped with a seared hamburger beef patty and rich brown onion and white button mushroom gravy. No fried egg because this particular local recipe does not use eggs. Not a sandwich. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "luobo_dunxia",
+      "name": "萝卜炖虾",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 萝卜炖虾. Chinese white radish and whole prawn stew: translucent white daikon radish slices and whole cooked pink shrimp with heads and shells in pale golden broth. Not winter melon. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "lusun_xiaren",
+      "name": "芦笋虾仁",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 芦笋虾仁. Chinese stir-fried asparagus and shrimp: bright green asparagus stalk pieces with clear asparagus tips, peeled pink shrimp in a light glossy garlic sauce. No broccoli. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "huangmen_ji",
+      "name": "黄焖鸡",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 黄焖鸡. Chinese huangmen chicken braise: bone-in chicken thigh pieces, green bell pepper chunks, potato chunks and dark shiitake mushrooms in rich glossy brown sauce. No rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "kele_jichi",
+      "name": "可乐鸡翅",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 可乐鸡翅. Chinese cola-braised chicken wings: whole wing mid-joints in a sticky deep chestnut brown glossy glaze with a few tiny scallion pieces. Wings are braised, not orange dry-rub roasted wings. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "hanshi_paigutang",
+      "name": "韩式排骨汤",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 韩式排骨汤. Korean style beef short-rib soup using bone-in beef ribs, doenjang soybean paste broth, kimchi and a little dried shrimp. Reddish brown savory soup, large beef rib pieces clearly visible. No pork ribs or rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "shanyao_dunniunan",
+      "name": "山药炖牛腩",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 山药炖牛腩. Chinese yam and beef brisket stew: distinct opaque ivory Chinese yam cylinders and tender brown beef brisket chunks with ginger in light clear savory broth. Not potato curry. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qincai_niurou",
+      "name": "芹菜牛肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 芹菜牛肉. Chinese stir-fried celery and beef: vivid green slender celery stem lengths with tender browned thin beef slices, glossy light savory sauce. No zucchini, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "gali_zhupaifan",
+      "name": "咖喱猪排饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 咖喱猪排饭. Japanese-style curry pork cutlet rice: crisp golden breaded pork cutlet sliced into strips, white rice and rich curry sauce with potato, onion and carrot. Clearly a breaded cutlet, not braised pork. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qingdun_yangtang",
+      "name": "清炖羊汤",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 清炖羊汤. Chinese clear lamb soup: cooked lamb leg chunks and some bone-in lamb rib pieces, translucent white daikon radish, a little cilantro and scallion in clear pale broth. No red chili sauce or noodles. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "suancaiyu",
+      "name": "酸菜鱼",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 酸菜鱼. Chinese suancai fish hotpot: delicate pale white snakehead fish slices, yellow-green pickled mustard cabbage, broad translucent glass noodles, bean sprouts, a few fish balls and one or two small scallop pieces in light sour golden broth. Fish is primary, no salmon. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "sanxian_tang",
+      "name": "三鲜汤",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 三鲜汤. Chinese three-delicacy soup: whole head-on pink shrimp, white button mushroom slices, slender shimeji mushrooms, silky tofu cubes and a few small salted duck egg pieces in delicate pale broth. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "koumo_jituirou",
+      "name": "口蘑鸡腿肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 口蘑鸡腿肉. Chinese stir-fried white button mushrooms and chicken thigh: juicy browned chicken thigh pieces with whole and halved white button mushrooms in light glossy brown pan sauce. No cream pasta. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "shanyao_yumi_paigu",
+      "name": "山药玉米排骨汤",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 山药玉米排骨汤. Chinese yam, corn and pork rib soup: yellow corn cob rounds, ivory Chinese yam cylinders and bone-in pork rib pieces with a little ginger in clear broth. Corn clearly visible. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "sanwenyu_menfan",
+      "name": "三文鱼焖饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 三文鱼焖饭. Chinese salmon rice cooked together: fluffy rice with distinct pink salmon pieces, small diced orange carrot, slender seafood mushrooms, lightly glossy butter. Not a cream pasta and not topped with a whole fillet. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qingjiao_niurou",
+      "name": "青椒牛肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 青椒牛肉. Chinese green bell pepper and beef stir-fry: thin beef strips and bright green pepper strips in a light glossy savory sauce. Both ingredients balanced, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qingchao_tonghao",
+      "name": "清炒茼蒿",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 清炒茼蒿. Chinese stir-fried crown daisy greens, tonghao: deeply serrated tender green leaves with thin green stems, a little minced garlic, lightly wilted and glossy. No broccoli or meat. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "mala_ganguo",
+      "name": "麻辣干锅",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 麻辣干锅. Chinese mala dry pot, not soup: cooked thin beef rolls, chicken wing pieces, broad glass noodles, enoki mushrooms, pale green celtuce pieces, round lotus root slices with holes and a few meatballs coated in reddish spicy dry-pot sauce. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "paigu_mifan",
+      "name": "排骨米饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 排骨米饭. Chinese Shandong-style pork-bone rice meal: a bowl of white rice with several meaty braised pork spine bone sections arranged beside the rice, dark brown light braising juices with subtle orange-peel seasoning. Not breaded pork cutlet. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "zhuzhou_fan",
+      "name": "猪肘饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 猪肘饭. Chinese braised pork knuckle rice: richly glazed tender pork hock with glossy brown skin, portions showing meat and skin together, served over white rice. Not pork belly cubes or pork chops. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "youcai_xianggu",
+      "name": "油菜香菇",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 油菜香菇. Chinese bok choy and shiitake mushroom stir-fry: vibrant green baby bok choy leaves with pale green stems and rich brown rehydrated shiitake caps, glossy light brown sauce. Vegetarian, no meat. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "yundousi_roumo",
+      "name": "芸豆丝肉末",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 芸豆丝肉末. Chinese shredded green beans with minced pork: very finely julienned long green bean strands with small browned pork crumbles, lightly stir-fried. These are shredded beans, not noodles and not short chopped bean chunks. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "suantai_chaorou",
+      "name": "蒜苔炒肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 蒜苔炒肉. Chinese garlic scape stir-fry with thin strips of pork: crisp bright green garlic scape segments, small rounded solid stems, tender browned pork ribbons in savory sauce. Not hollow green onions or celery. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "shanbei_jungu_menfan",
+      "name": "扇贝菌菇焖饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 扇贝菌菇焖饭. Scallop and mushroom rice cooked together: fluffy rice with large plump white scallop meats, slender shimeji mushrooms and small diced orange carrots. Scallops are clearly visible, no shrimp or salmon. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "shouzhuafan",
+      "name": "手抓饭",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 手抓饭. Authentic Xinjiang-style lamb pilaf: distinct fluffy golden rice grains, substantial browned lamb leg chunks with a few bone-in pieces, thin carrot strips and translucent onion. No curry sauce. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "qingchao_caixin",
+      "name": "清炒菜心",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 清炒菜心. Chinese garlic stir-fried choy sum: tender bright green stems, soft oval green leaves and a few small flower buds, scattered minced garlic, lightly glossy. No meat. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "ziran_yangcong_niurou",
+      "name": "孜然洋葱牛肉",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 孜然洋葱牛肉. Chinese cumin onion beef: stir-fried thin beef slices and onion crescents with clearly visible toasted cumin seeds and dry barbecue spices, fragrant browned edges. Not wet curry, no rice. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "yutou_niuleitiao",
+      "name": "芋头牛肋条",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 芋头牛肋条. Chinese taro and beef short-rib strip braise: tender long beef rib meat chunks, pale ivory taro wedges with subtle purple flecks, green chili pieces and a few tiny red chili slices in savory braising sauce. Taro not potato. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "jiaogua_jidan_xiaren",
+      "name": "茭瓜鸡蛋虾仁蒸饺",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 茭瓜鸡蛋虾仁蒸饺. Chinese steamed dumplings filled with zucchini, scrambled egg and shrimp: eight plump crescent-shaped steamed dumplings with delicate pleated pale wrappers on a simple plate. One dumpling gently opened at front reveals shredded pale green zucchini, small yellow egg pieces and pink shrimp. No dipping bowl, not fried dumplings. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "xiaolongxia",
+      "name": "小龙虾",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 小龙虾. Chinese spicy crawfish dish: bright red cooked small whole crayfish and peeled crayfish tails in a rich spicy sauce with some broad translucent glass noodles and a couple of small abalone pieces. Crayfish are fully cooked, no live animals. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "yishi_sanmingzhi",
+      "name": "意式三明治",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 意式三明治. Italian sourdough sandwich: two thick halves of crusty sourdough bread filled with thin folds of Italian cured ham, creamy cheese and halved small tomatoes. Show the cross-section clearly, no burger patty. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "jiangxiangbing",
+      "name": "酱香饼",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 酱香饼. Chinese jiangxiangbing: flat griddled scallion pancake brushed with reddish savory bean sauce, cut into bite-sized square pieces and stacked loosely on a white plate, a few small Taiwanese grilled sausage pieces at the side. No pizza cheese. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "meiguo_basike",
+      "name": "莓果巴斯克",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 莓果巴斯克. Berry Basque cheesecake: a small round creamy cheesecake with deeply caramelized dark brown top, topped with fresh blueberries and raspberries, a neat wedge cut so the pale creamy interior is visible. No writing or candles, not chocolate cake. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "danta",
+      "name": "蛋挞",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 蛋挞. Portuguese-style egg tarts: five golden flaky pastry tart shells filled with pale yellow egg custard with scattered caramelized brown spots on top, clearly distinct individual tarts. No berries or icing. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    },
+    {
+      "id": "yanduxian",
+      "name": "腌笃鲜",
+      "prompt": "Use case: photorealistic-natural. Standalone square food photograph of 腌笃鲜. Chinese yanduxian soup: fresh spring bamboo shoot slices, pale beige knotted tofu-skin ribbons, small pieces of salted pork and bone-in pork ribs in lightly milky ivory broth. Not noodles, no shellfish. One complete portion in a simple white ceramic shallow bowl or plate, authentic home cooking. Natural side daylight, clean pale gray tabletop, camera at 45 degrees from above, full rim visible with narrow quiet margins, food fills 85% of frame, sharp natural textures, premium but honest recipe catalog photo. No text, no labels, no badges, no UI, no hands, no utensils, no collage. Single dish only, square composition, matching a cohesive recipe photography series."
+    }
+  ]
+}

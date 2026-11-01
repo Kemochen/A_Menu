@@ -11,7 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         navigation.setNavigationBarHidden(true, animated: false)
         navigation.setToolbarHidden(false, animated: false)
         navigation.overrideUserInterfaceStyle = .light
-        navigation.view.backgroundColor = UIColor(red: 0.969, green: 0.976, blue: 0.984, alpha: 1)
+        navigation.view.backgroundColor = .systemBackground
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = navigation
         window?.makeKeyAndVisible()
@@ -34,6 +34,7 @@ final class MenuBridgeViewController: CAPBridgeViewController {
     private lazy var historyItem = makeItem("历史菜谱", symbol: "clock.arrow.circlepath", action: #selector(history))
     private lazy var planItem = makeItem("已选菜单", symbol: "cart", action: #selector(plan))
     private lazy var settingsItem = makeItem("服务器设置", symbol: "gearshape", action: #selector(settings))
+    private lazy var addItem = makeItem("新增菜品", symbol: "plus", action: #selector(add))
 
     override func capacitorDidLoad() {
         let plugin = MenuControlsPlugin()
@@ -44,7 +45,7 @@ final class MenuBridgeViewController: CAPBridgeViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        toolbarItems = [browseItem, historyItem, planItem,
+        toolbarItems = [browseItem, historyItem, planItem, addItem,
                         UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil), settingsItem]
         updateControls(hasServer: false, count: 0)
     }
@@ -67,7 +68,7 @@ final class MenuBridgeViewController: CAPBridgeViewController {
     }
 
     func updateControls(hasServer: Bool, count: Int) {
-        for item in [browseItem, historyItem, planItem] { item.isEnabled = hasServer }
+        for item in [browseItem, historyItem, planItem, addItem] { item.isEnabled = hasServer }
         planItem.title = "已选菜单 \(count)"
         planItem.accessibilityLabel = "已选菜单，\(count) 道菜"
         if #available(iOS 26.0, *) {
@@ -77,9 +78,10 @@ final class MenuBridgeViewController: CAPBridgeViewController {
 
     func layoutData() -> [String: Any] {
         guard isViewLoaded else { return [:] }
-        var result: [String: Any] = ["width": Double(view.bounds.width), "height": Double(view.bounds.height)]
+        var result: [String: Any] = ["width": Double(view.bounds.width), "height": Double(view.bounds.height), "foldable": false]
         if #available(iOS 27.1, *) {
             let regions = view.reservedRegions(kind: .division, options: .includeInactive)
+            result["foldable"] = !regions.isEmpty
             if let fold = regions.first(where: { region in
                 let frame = region.frame
                 return frame.height > frame.width && frame.midX > 0 && frame.midX < view.bounds.width
@@ -102,6 +104,7 @@ final class MenuBridgeViewController: CAPBridgeViewController {
     @objc private func history() { controls?.notifyListeners("command", data: ["action": "history"]) }
     @objc private func plan() { controls?.notifyListeners("command", data: ["action": "plan"]) }
     @objc private func settings() { controls?.notifyListeners("command", data: ["action": "settings"]) }
+    @objc private func add() { controls?.notifyListeners("command", data: ["action": "add"]) }
 }
 
 @objc(MenuControlsPlugin)

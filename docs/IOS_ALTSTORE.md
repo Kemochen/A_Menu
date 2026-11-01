@@ -44,6 +44,8 @@
 
 ## 群晖连接要求
 
+如果只更新 IPA，群晖仍为旧版，新增的 `/api/recipes` 可能返回 HTML 404 页面。旧 App 会将其当作 JSON 解析，iOS 可能显示 `The string did not match the expected pattern.`。请将群晖项目代码更新到包含新接口的 `ios-altstore` 分支，然后在原项目中执行 `docker compose up -d --build`，或在 Container Manager 中重新构建并启动项目。保留现有数据卷，不要删除 volume。修订后的 App 会明确提示服务器版本问题，并继续保留已加载的菜品。
+
 - HTTPS 需要有效、受系统信任的证书；内网或 VPN 可以直接填写 `http://NAS-IP:3000`，不强制配置域名或证书。
 - HTTP 支持 `10.*`、`172.16.*` 到 `172.31.*`、`192.168.*` 和 `100.64.*` 到 `100.127.*` 的地址，另支持 IPv6 ULA / 链路本地地址、`.local` 和无点的本地主机名。公网域名和公网 IP 仍需 HTTPS；VPN 使用自定义域名时优先填写服务器的内网 IP。
 - 填写根网址，不带 `/api/history`，也不要在网址中嵌入账号密码。

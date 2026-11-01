@@ -12,7 +12,7 @@
     "mobile:typecheck": "tsc --project mobile/tsconfig.json",
     "ios:prepare": "node scripts/prepare-ios.mjs",
     "ios:ipa": "node scripts/prepare-ios.mjs && node scripts/build-ios-ipa.mjs",
-    "test:mobile": "node --test tests/mobile-config.test.mjs tests/book-layout.test.mjs tests/recipe-store.test.mjs tests/dish-photos.test.mjs"
+    "test:mobile": "node --test tests/mobile-config.test.mjs tests/book-layout.test.mjs tests/recipe-store.test.mjs tests/dish-photos.test.mjs tests/api-client.test.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.6.0",

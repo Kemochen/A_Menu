@@ -7,6 +7,7 @@ import { DishImage } from "@/components/DishImage";
 import type { Recipe } from "@/data/recipes";
 import { weatherLabels, weatherSymbols } from "@/data/recipes";
 import { getBookPages, resolveBookSplit, type BookDivision, type BookSplit } from "@/lib/book-layout.mjs";
+import { requestApiJson } from "@/lib/api-client.mjs";
 
 type WeekdayId = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 
@@ -222,30 +223,20 @@ function isLastWeek(value: string) {
 }
 
 async function readHistory(historyEndpoint: string) {
-  const response = await fetch(historyEndpoint, { cache: "no-store" });
-  const data = (await response.json()) as HistoryResponse;
-
-  if (!response.ok) {
-    throw new Error(data.error ?? "读取历史记录失败。");
-  }
-
+  const data = await requestApiJson<HistoryResponse>(historyEndpoint, "history", { cache: "no-store" });
+  if (!Array.isArray(data.historyEntries)) throw new Error("服务器没有返回有效的历史菜单，请更新群晖菜单服务。");
   return data.historyEntries;
 }
 
 async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown, historyEndpoint: string) {
-  const response = await fetch(historyEndpoint, {
+  const data = await requestApiJson<HistoryResponse>(historyEndpoint, "history", {
     method,
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(body)
   });
-  const data = (await response.json()) as HistoryResponse;
-
-  if (!response.ok) {
-    throw new Error(data.error ?? "操作失败。");
-  }
-
+  if (!Array.isArray(data.historyEntries)) throw new Error("服务器没有返回有效的历史菜单，请更新群晖菜单服务。");
   return data;
 }
 
@@ -267,9 +258,8 @@ export function MenuApp({
   const loadRecipes = useCallback(async () => {
     const requestId = ++recipeRequestId.current;
     try {
-      const response = await fetch(recipesEndpoint, { cache: "no-store" });
-      const data = await response.json() as { recipes?: Recipe[]; error?: string };
-      if (!response.ok || !Array.isArray(data.recipes)) throw new Error(data.error ?? "读取菜品库失败，请更新菜单服务器。");
+      const data = await requestApiJson<{ recipes?: Recipe[] }>(recipesEndpoint, "recipes", { cache: "no-store" });
+      if (!Array.isArray(data.recipes)) throw new Error("服务器没有返回有效的菜品库，请更新群晖菜单服务。");
       if (requestId === recipeRequestId.current) { setRecipes(data.recipes); setRecipeError(""); }
     } catch (error) {
       if (requestId === recipeRequestId.current) setRecipeError(error instanceof Error ? error.message : "读取菜品库失败。");
@@ -284,9 +274,8 @@ export function MenuApp({
   }, [loadRecipes]);
 
   async function createRecipe(input: unknown) {
-    const response = await fetch(recipesEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
-    const data = await response.json() as { recipe?: Recipe; error?: string };
-    if (!response.ok || !data.recipe) throw new Error(data.error ?? "保存菜品失败。");
+    const data = await requestApiJson<{ recipe?: Recipe }>(recipesEndpoint, "recipes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    if (!data.recipe) throw new Error("服务器没有返回有效的菜品，保存结果未确认，请刷新菜品库后检查。");
     ++recipeRequestId.current;
     const recipe = data.recipe;
     setRecipes((items) => [...items.filter((item) => item.id !== recipe.id), recipe]);

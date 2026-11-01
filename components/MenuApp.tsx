@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { Grid3X3, History, Settings, ShoppingBasket } from "lucide-react";
 import type { Recipe } from "@/data/recipes";
 import { weatherLabels, weatherSymbols } from "@/data/recipes";
+import { getBookPages, resolveBookSplit, type BookDivision, type BookSplit } from "@/lib/book-layout.mjs";
 
 type WeekdayId = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 
@@ -46,6 +48,12 @@ type HistoryResponse = {
 type MenuAppProps = {
   recipes: Recipe[];
   historyEndpoint?: string;
+  presentation?: "standard" | "book";
+  nativeToolbar?: boolean;
+  command?: { id: number; action: "browse" | "history" | "plan" } | null;
+  division?: BookDivision | null;
+  onSelectionCountChange?: (count: number) => void;
+  onSettings?: () => void;
 };
 
 const allCategory = "全部";
@@ -238,7 +246,19 @@ async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown, his
   return data;
 }
 
-export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppProps) {
+export function MenuApp({
+  recipes,
+  historyEndpoint = "/api/history",
+  presentation = "standard",
+  nativeToolbar = false,
+  command,
+  division,
+  onSelectionCountChange,
+  onSettings
+}: MenuAppProps) {
+  const isBook = presentation === "book";
+  const bookRef = useRef<HTMLDivElement>(null);
+  const [bookSplit, setBookSplit] = useState<BookSplit | null>(null);
   const [activeCategory, setActiveCategory] = useState(allCategory);
   const [plannedDishes, setPlannedDishes] = useState<PlannedDish[]>([]);
   const [historyEntries, setHistoryEntries] = useState<HistoryEntry[]>([]);
@@ -253,6 +273,34 @@ export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppPr
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    onSelectionCountChange?.(plannedDishes.length);
+  }, [onSelectionCountChange, plannedDishes.length]);
+
+  useEffect(() => {
+    if (!command) return;
+    setSelectedRecipeId(null);
+    setActivePanel(command.action === "browse" ? null : command.action);
+  }, [command]);
+
+  useEffect(() => {
+    const element = bookRef.current;
+    if (!isBook || !element) return;
+    const measure = () => {
+      const rect = element.getBoundingClientRect();
+      const localDivision = division ? { x: division.x - rect.left, width: division.width } : null;
+      const next = resolveBookSplit(rect.width, localDivision);
+      setBookSplit((current) =>
+        current?.left === next?.left && current?.right === next?.right && current?.gap === next?.gap
+          ? current : next
+      );
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    measure();
+    return () => observer.disconnect();
+  }, [division, isBook]);
 
   const recipesById = useMemo(
     () => Object.fromEntries(recipes.map((recipe) => [recipe.id, recipe])) as Record<string, Recipe>,
@@ -350,7 +398,9 @@ export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppPr
     setCurrentPage(1);
   }, [activeCategory]);
 
-  const pageCount = Math.max(1, Math.ceil(filteredRecipes.length / recipesPerPage));
+  const bookPages = useMemo(() => getBookPages(filteredRecipes, currentPage), [currentPage, filteredRecipes]);
+  const pageCount = isBook ? bookPages.pageCount : Math.max(1, Math.ceil(filteredRecipes.length / recipesPerPage));
+  const pageStep = isBook && bookSplit ? 2 : 1;
   const paginatedRecipes = useMemo(
     () =>
       filteredRecipes.slice(
@@ -537,15 +587,57 @@ export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppPr
     }
   }
 
+  function renderRecipe(recipe: Recipe) {
+    return (
+      <button
+        key={recipe.id}
+        type="button"
+        onClick={() => setSelectedRecipeId(recipe.id)}
+        className={`${isBook ? "book-recipe " : ""}overflow-hidden rounded-lg border border-line bg-white text-left shadow-soft transition hover:border-leaf`}
+      >
+        <div className={isBook ? "book-recipe-image relative bg-slate-100" : "relative h-20 bg-slate-100 sm:h-32 lg:h-36"}>
+          <img src={recipe.image} alt={recipe.name} className="h-full w-full object-cover" />
+          <span
+            className={`absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-md bg-white/95 text-sm shadow-soft ${isBook ? "" : "sm:right-2 sm:top-2 sm:h-8 sm:w-8 sm:rounded-lg sm:text-base"}`}
+            title={weatherLabels[recipe.weather]}
+            aria-label={weatherLabels[recipe.weather]}
+          >
+            {weatherSymbols[recipe.weather]}
+          </span>
+        </div>
+        <div className={`grid gap-1 p-2 ${isBook ? "" : "sm:p-3"}`}>
+          <h2 className={`text-xs font-bold leading-snug ${isBook ? "" : "sm:text-base"}`}>{recipe.name}</h2>
+          <p className="text-xs font-medium text-slate-500">
+            上次食用：{formatRelativeTime(lastEatenByRecipe[recipe.id])}
+          </p>
+          {plannedDaysByRecipe[recipe.id]?.length ? (
+            <p className="rounded-md bg-leaf/10 px-1.5 py-1 text-xs font-bold text-leaf">
+              已选：{plannedDaysByRecipe[recipe.id].map((day) => weekdayLabels[day]).join("、")}
+            </p>
+          ) : null}
+        </div>
+      </button>
+    );
+  }
+
+  const bookStyle = bookSplit ? {
+    "--book-left-width": `${bookSplit.left}px`,
+    "--book-right-width": `${bookSplit.right}px`,
+    "--book-gap": `${bookSplit.gap}px`
+  } as CSSProperties : undefined;
+
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-3 pb-8 pt-3 text-ink sm:px-6 lg:py-8">
+    <main
+      className={`${isBook ? `book-menu ${nativeToolbar ? "" : "book-menu-with-rail"} ` : ""}mx-auto min-h-screen w-full max-w-6xl px-3 pb-8 pt-3 text-ink sm:px-6 lg:py-8`}
+      style={isBook ? bookStyle : undefined}
+    >
       <header className="sticky top-0 z-20 -mx-3 mb-4 border-b border-line bg-white/95 px-3 py-3 backdrop-blur sm:static sm:mx-0 sm:border-b-0 sm:bg-transparent sm:px-0 sm:py-0">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-wide text-leaf">A Menu</p>
-            <h1 className="text-2xl font-bold leading-tight sm:text-4xl">本周菜单</h1>
+            <h1 className={`text-2xl font-bold leading-tight ${isBook ? "" : "sm:text-4xl"}`}>本周菜单</h1>
           </div>
-          <div className="flex shrink-0 gap-2">
+          <div className={`${isBook ? "hidden" : "flex"} shrink-0 gap-2`}>
             <button
               type="button"
               onClick={() => setActivePanel("history")}
@@ -562,7 +654,7 @@ export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppPr
             </button>
           </div>
         </div>
-        <p className="mt-2 text-sm leading-6 text-slate-600">
+        <p className={`${isBook ? "hidden" : "mt-2 text-sm leading-6 text-slate-600"}`}>
           点开菜品图片查看食材，再安排到本周菜单。
         </p>
       </header>
@@ -594,56 +686,54 @@ export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppPr
         })}
       </div>
 
-      <section className="grid grid-cols-3 gap-2 min-[600px]:grid-cols-6 sm:gap-3">
-        {paginatedRecipes.map((recipe) => (
-          <button
-            key={recipe.id}
-            type="button"
-            onClick={() => setSelectedRecipeId(recipe.id)}
-            className="overflow-hidden rounded-lg border border-line bg-white text-left shadow-soft transition hover:border-leaf"
-          >
-            <div className="relative h-20 bg-slate-100 sm:h-32 lg:h-36">
-              <img src={recipe.image} alt={recipe.name} className="h-full w-full object-cover" />
-              <span
-                className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-md bg-white/95 text-sm shadow-soft sm:right-2 sm:top-2 sm:h-8 sm:w-8 sm:rounded-lg sm:text-base"
-                title={weatherLabels[recipe.weather]}
-                aria-label={weatherLabels[recipe.weather]}
-              >
-                {weatherSymbols[recipe.weather]}
-              </span>
-            </div>
-            <div className="grid gap-1 p-2 sm:p-3">
-              <h2 className="text-xs font-bold leading-snug sm:text-base">{recipe.name}</h2>
-              <p className="text-xs font-medium text-slate-500">
-                上次食用：{formatRelativeTime(lastEatenByRecipe[recipe.id])}
-              </p>
-              {plannedDaysByRecipe[recipe.id]?.length ? (
-                <p className="rounded-md bg-leaf/10 px-1.5 py-1 text-xs font-bold text-leaf">
-                  已选：{plannedDaysByRecipe[recipe.id].map((day) => weekdayLabels[day]).join("、")}
-                </p>
-              ) : null}
-            </div>
+      {isBook ? (
+        <div ref={bookRef} className="book-spread" data-expanded={Boolean(bookSplit)}>
+          <section className="book-leaf book-leaf-primary" aria-label={`当前菜页，第 ${bookPages.anchor} 页`}>
+            <div className="book-grid">{bookPages.primary.map(renderRecipe)}</div>
+          </section>
+          <section className="book-leaf book-leaf-extra" aria-label={`新增菜页，第 ${bookPages.anchor + 1} 页`}>
+            <div className="book-grid">{bookPages.extra.map(renderRecipe)}</div>
+          </section>
+        </div>
+      ) : (
+        <section className="grid grid-cols-3 gap-2 min-[600px]:grid-cols-6 sm:gap-3">
+          {paginatedRecipes.map(renderRecipe)}
+        </section>
+      )}
+
+      {isBook && !nativeToolbar ? (
+        <nav className="book-action-rail" aria-label="菜单功能">
+          <button type="button" title="菜品" aria-label="菜品" onClick={() => { setActivePanel(null); setSelectedRecipeId(null); }}>
+            <Grid3X3 size={21} aria-hidden="true" />
           </button>
-        ))}
-      </section>
+          <button type="button" title="历史菜谱" aria-label="历史菜谱" aria-pressed={activePanel === "history"} onClick={() => { setSelectedRecipeId(null); setActivePanel("history"); }}>
+            <History size={21} aria-hidden="true" />
+          </button>
+          <button type="button" title={`已选菜单 ${plannedDishes.length}`} aria-label={`已选菜单 ${plannedDishes.length}`} aria-pressed={activePanel === "plan"} onClick={() => { setSelectedRecipeId(null); setActivePanel("plan"); }}>
+            <ShoppingBasket size={21} aria-hidden="true" />
+            {plannedDishes.length ? <span className="book-rail-badge">{plannedDishes.length}</span> : null}
+          </button>
+          {onSettings ? <button type="button" title="服务器设置" aria-label="服务器设置" onClick={onSettings}><Settings size={21} aria-hidden="true" /></button> : null}
+        </nav>
+      ) : null}
 
       {pageCount > 1 ? (
         <nav className="mt-4 flex items-center justify-between gap-3" aria-label="菜品分页">
           <button
             type="button"
-            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            onClick={() => setCurrentPage((page) => Math.max(1, page - pageStep))}
             disabled={currentPage === 1}
             className="h-10 rounded-lg border border-line bg-white px-4 text-sm font-bold text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             上一页
           </button>
           <span className="text-sm font-semibold text-slate-600">
-            {currentPage} / {pageCount}
+            {currentPage}{isBook && bookSplit && bookPages.extra.length ? `–${Math.min(pageCount, currentPage + 1)}` : ""} / {pageCount}
           </span>
           <button
             type="button"
-            onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))}
-            disabled={currentPage === pageCount}
+            onClick={() => setCurrentPage((page) => Math.min(pageCount, page + pageStep))}
+            disabled={currentPage + pageStep > pageCount}
             className="h-10 rounded-lg border border-line bg-white px-4 text-sm font-bold text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             下一页

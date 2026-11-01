@@ -2,7 +2,7 @@
 node_modules
 out
 dist
-ios
+/ios/
 mobile/dist
 build/ios
 .env*.local

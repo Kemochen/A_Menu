@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
@@ -28,6 +28,7 @@ if (!existsSync("ios/App/App.xcodeproj")) {
 }
 
 capacitor(["sync", "ios"]);
+cpSync("mobile/ios/SceneDelegate.swift", "ios/App/App/SceneDelegate.swift");
 
 const info = "ios/App/App/Info.plist";
 const permissionKey = ":NSLocalNetworkUsageDescription";

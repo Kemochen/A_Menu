@@ -2,6 +2,7 @@
   "appId": "com.kemochen.amenu",
   "appName": "A Menu",
   "webDir": "mobile/dist",
+  "backgroundColor": "#f7f9fb",
   "ios": {
     "contentInset": "never"
   },

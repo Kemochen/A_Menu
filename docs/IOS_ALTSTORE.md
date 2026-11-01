@@ -7,7 +7,7 @@
 - 复用 `components/MenuApp.tsx`、`data/recipes.ts` 和菜品图片。
 - 菜库和图片随 IPA 打包；以后更新菜库需要重新构建并安装 IPA，不会自动读取群晖上的新版菜库。
 - Vite 只负责把现有 React 界面打成 Capacitor 可打包的静态资源，不替换 Next.js 服务端。
-- 首次启动填写群晖菜单的 HTTPS 根网址，例如 `https://menu.example.com`。
+- 首次启动填写群晖菜单根网址，支持 HTTPS，以及可信内网或 VPN 中的 HTTP，例如 `http://192.168.1.111:3000`。
 - 所有手机和网页都应连接同一个群晖实例；提交、修改和删除继续访问 `/api/history`，共享同一份服务器 JSON。
 - 使用 Capacitor 原生 HTTP 访问接口，无需给群晖接口开放通配 CORS。
 - 手机宽度不足 600px 为三列，600px 及以上为六列；支持横竖屏，不锁定屏幕方向。
@@ -34,16 +34,19 @@
 1. 按 [AltStore 官方 Windows 安装指南](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows) 安装 AltServer 和所需 Apple 组件。
 2. 连接 iPhone，按官方步骤安装 AltStore；Apple ID 等认证由你在官方工具中填写。
 3. 将 IPA 放到 iPhone 的“文件”App 中，打开 AltStore 的 My Apps，通过 `+` 选择 IPA。
-4. 启动 A Menu，填写与网页版相同的群晖 HTTPS 网址。
+4. 启动 A Menu，填写与网页版相同的群晖网址；使用内网 HTTP 时先连上家庭 Wi-Fi 或 VPN。
 
 免费 Apple 账户侧载通常需要每七天刷新，并受活跃 App 数量限制。电脑上的 AltServer 和手机需能互相连接以刷新。
 详见 [AltStore 使用与刷新说明](https://faq.altstore.io/altstore-classic/your-altstore) 和 [AltServer 说明](https://faq.altstore.io/altstore-classic/altserver)。
 
 ## 群晖连接要求
 
-- 配置有效、受系统信任的 HTTPS 证书和反向代理，代理到现有 Next.js 服务。
+- HTTPS 需要有效、受系统信任的证书；内网或 VPN 可以直接填写 `http://NAS-IP:3000`，不强制配置域名或证书。
+- HTTP 支持 `10.*`、`172.16.*` 到 `172.31.*`、`192.168.*` 和 `100.64.*` 到 `100.127.*` 的地址，另支持 IPv6 ULA / 链路本地地址、`.local` 和无点的本地主机名。公网域名和公网 IP 仍需 HTTPS；VPN 使用自定义域名时优先填写服务器的内网 IP。
 - 填写根网址，不带 `/api/history`，也不要在网址中嵌入账号密码。
-- 不使用自签名证书绕过，也不全局放开 iOS 明文 HTTP。
+- HTTP 未加密，只用于可信内网或受保护的 VPN；App 不会自动建立或验证 VPN，手机需要自行连接 VPN，且 VPN 路由必须能访问群晖。
+- iOS 打包脚本将 `mobile/ios-network-policy.json` 合并到 Info.plist，仅对指定内网 / VPN 网段设置 HTTP 例外，保留局域网权限说明，不全局关闭 ATS，也不绕过 HTTPS 证书验证。参考 [苹果 ATS 例外配置](https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains)。
+- 首次出现局域网访问提示时允许访问；拒绝后可在 iPhone 设置中重新允许此 App 使用局域网。
 - 当前 API 沿用家庭共享模式，没有新增身份验证。不要直接把可任意修改/删除历史的接口暴露给不受信任的人；家庭远程使用优先配合私有 VPN 或受限网络访问。
 - 不要填写 `localhost`；在手机中它指向手机自己。
 
@@ -58,7 +61,7 @@ pnpm run mobile:build
 
 Windows 可验证静态资源，但不能运行 Xcode 或本地产出 iOS 二进制。
 浏览器预览运行 `pnpm run dev` 和 `pnpm run mobile:dev`，打开 `http://127.0.0.1:5173`。
-浏览器预览只显示共享菜单界面，通过代理访问本地 3000 端口，不显示原生服务器设置。服务器设置和远程 HTTPS 连接需要在 iOS 真机上验证。
+浏览器预览只显示共享菜单界面，通过代理访问本地 3000 端口，不显示原生服务器设置。服务器设置、内网 HTTP 和远程 HTTPS 连接需要在 iOS 真机上验证。
 开发模式可以打开 `http://127.0.0.1:5173/?native-preview=1` 检查设置界面；浏览器没有原生 HTTP 能力，远程请求仍受浏览器 CORS 规则约束，不能代替真机连通性测试。
 
 在 Mac 安装 Xcode 27.1 或更新版本及其命令行工具后：

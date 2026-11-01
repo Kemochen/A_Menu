@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
@@ -40,3 +40,21 @@ const command = existingPermission.status === 0
 const permission = spawnSync("/usr/libexec/PlistBuddy", ["-c", command, info], { stdio: "inherit" });
 if (permission.error) throw permission.error;
 if (permission.status !== 0) process.exit(permission.status ?? 1);
+
+function configurePlist(command, args) {
+  const result = spawnSync(command, args, { stdio: "inherit" });
+  if (result.error) throw result.error;
+  if (result.status !== 0) process.exit(result.status ?? 1);
+}
+
+mkdirSync("build/ios", { recursive: true });
+const policyFile = "build/ios/network-policy.plist";
+configurePlist("plutil", ["-convert", "xml1", "-o", policyFile, "mobile/ios-network-policy.json"]);
+const existingTransport = spawnSync("/usr/libexec/PlistBuddy", ["-c", "Print :NSAppTransportSecurity", info], {
+  stdio: "ignore"
+});
+if (existingTransport.error) throw existingTransport.error;
+if (existingTransport.status === 0) {
+  configurePlist("/usr/libexec/PlistBuddy", ["-c", "Delete :NSAppTransportSecurity", info]);
+}
+configurePlist("/usr/libexec/PlistBuddy", ["-c", `Merge ${policyFile}`, info]);

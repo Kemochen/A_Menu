@@ -60,7 +60,7 @@ function MobileApp() {
       setServerInput(nextServer);
       setSettingsOpen(false);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "连接失败，请检查网址、网络和 HTTPS 证书。");
+      setError(cause instanceof Error ? cause.message : "连接失败，请检查网址、VPN、局域网权限或 HTTPS 证书。");
     } finally {
       setConnecting(false);
     }
@@ -117,11 +117,14 @@ function MobileApp() {
               autoFocus
               value={serverInput}
               onChange={(event) => setServerInput(event.target.value)}
-              placeholder="https://menu.example.com"
+              placeholder="http://192.168.1.111:3000"
               disabled={connecting}
               className="min-w-0 w-full rounded-lg border border-line px-3 py-3 text-base font-normal"
             />
           </label>
+          {serverInput.trim().toLowerCase().startsWith("http:") ? (
+            <p className="text-xs text-amber-800">HTTP 连接未加密，请仅在可信内网或 VPN 中使用。</p>
+          ) : null}
           {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
           <div className="flex justify-end gap-2">
             {server ? (

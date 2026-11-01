@@ -45,6 +45,7 @@ type HistoryResponse = {
 
 type MenuAppProps = {
   recipes: Recipe[];
+  historyEndpoint?: string;
 };
 
 const allCategory = "全部";
@@ -209,8 +210,8 @@ function isLastWeek(value: string) {
   return date >= startOfLastWeek && date < startOfThisWeek;
 }
 
-async function readHistory() {
-  const response = await fetch("/api/history", { cache: "no-store" });
+async function readHistory(historyEndpoint: string) {
+  const response = await fetch(historyEndpoint, { cache: "no-store" });
   const data = (await response.json()) as HistoryResponse;
 
   if (!response.ok) {
@@ -220,8 +221,8 @@ async function readHistory() {
   return data.historyEntries;
 }
 
-async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown) {
-  const response = await fetch("/api/history", {
+async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown, historyEndpoint: string) {
+  const response = await fetch(historyEndpoint, {
     method,
     headers: {
       "Content-Type": "application/json"
@@ -237,7 +238,7 @@ async function saveHistory(method: "POST" | "PUT" | "DELETE", body: unknown) {
   return data;
 }
 
-export function MenuApp({ recipes }: MenuAppProps) {
+export function MenuApp({ recipes, historyEndpoint = "/api/history" }: MenuAppProps) {
   const [activeCategory, setActiveCategory] = useState(allCategory);
   const [plannedDishes, setPlannedDishes] = useState<PlannedDish[]>([]);
   const [historyEntries, setHistoryEntries] = useState<HistoryEntry[]>([]);
@@ -265,7 +266,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
     }
 
     try {
-      const entries = await readHistory();
+      const entries = await readHistory(historyEndpoint);
       setHistoryEntries(entries);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "读取历史记录失败。");
@@ -274,7 +275,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
         setIsLoadingHistory(false);
       }
     }
-  }, []);
+  }, [historyEndpoint]);
 
   useEffect(() => {
     void loadHistory(true);
@@ -489,7 +490,7 @@ export function MenuApp({ recipes }: MenuAppProps) {
     setNotice("");
 
     try {
-      const data = await saveHistory("DELETE", { id: entryId });
+      const data = await saveHistory("DELETE", { id: entryId }, historyEndpoint);
       setHistoryEntries(data.historyEntries);
 
       if (editingEntryId === entryId) {
@@ -520,8 +521,8 @@ export function MenuApp({ recipes }: MenuAppProps) {
 
     try {
       const data = editingEntryId
-        ? await saveHistory("PUT", { id: editingEntryId, items, note: submissionNote })
-        : await saveHistory("POST", { items, note: submissionNote });
+        ? await saveHistory("PUT", { id: editingEntryId, items, note: submissionNote }, historyEndpoint)
+        : await saveHistory("POST", { items, note: submissionNote }, historyEndpoint);
 
       setHistoryEntries(data.historyEntries);
       setSubmittedEntry(data.entry ?? null);

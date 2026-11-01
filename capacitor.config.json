@@ -1,0 +1,13 @@
+{
+  "appId": "com.kemochen.amenu",
+  "appName": "A Menu",
+  "webDir": "mobile/dist",
+  "ios": {
+    "contentInset": "never"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

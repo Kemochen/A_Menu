@@ -1,6 +1,10 @@
 .git
 .next
 node_modules
+ios
+mobile
+build
+.github
 out
 storage
 @eaDir

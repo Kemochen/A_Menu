@@ -2,6 +2,9 @@
 node_modules
 out
 dist
+ios
+mobile/dist
+build/ios
 .env*.local
 @eaDir
 **/@eaDir

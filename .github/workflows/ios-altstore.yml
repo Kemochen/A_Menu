@@ -11,7 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: xcode-27
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
     steps:
@@ -25,12 +25,26 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Typecheck and test
+      - name: Verify shared data and native project
         run: |
           pnpm run mobile:typecheck
           pnpm run test:mobile
-      - name: Build unsigned device IPA
+          pnpm run native:check
+          pnpm run test:native-config
+      - name: Test native app on ordinary iPhone and Duo simulators
+        run: pnpm run ios:test --require-duo
+      - name: Build native SwiftUI IPA
         run: pnpm run ios:ipa
+      - name: Upload native screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: A_Menu-native-tests
+          path: |
+            build/ios/screenshots/
+            build/ios/tests/
+          if-no-files-found: warn
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         with:
           name: A_Menu-altstore

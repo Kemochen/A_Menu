@@ -5,6 +5,10 @@ dist
 /ios/
 mobile/dist
 build/ios
+native/AMenu.xcodeproj/xcuserdata/
+native/AMenu.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
+.DS_Store
 .env*.local
 @eaDir
 **/@eaDir

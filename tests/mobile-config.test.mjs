@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { createRequire } from "node:module";
 import { normalizeServerUrl } from "../mobile/server-url.mjs";
 
 test("normalizes HTTPS server origins including a custom port", () => {
@@ -52,12 +53,13 @@ test("iOS transport policy permits only private address ranges without global AT
   for (const exception of Object.values(transport.NSExceptionDomains)) {
     assert.deepEqual(exception, { NSExceptionAllowsInsecureHTTPLoads: true });
   }
-  const prepare = readFileSync(new URL("../scripts/prepare-ios.mjs", import.meta.url), "utf8");
-  assert.ok(prepare.includes("mobile/ios-network-policy.json"));
-  assert.ok(prepare.includes("Merge ${policyFile}"));
+  const require = createRequire(import.meta.url);
+  const plist = createRequire(require.resolve("@capacitor/cli/package.json"))("plist");
+  const native = plist.parse(readFileSync(new URL("../native/App/Info.plist", import.meta.url), "utf8"));
+  assert.deepEqual(native.NSAppTransportSecurity, transport);
 });
 
-test("packages local assets with native HTTP instead of loading a remote website", () => {
+test("retains the legacy preview configuration without loading a remote website", () => {
   const config = JSON.parse(readFileSync(new URL("../capacitor.config.json", import.meta.url), "utf8"));
   assert.equal(config.webDir, "mobile/dist");
   assert.equal(config.plugins.CapacitorHttp.enabled, true);

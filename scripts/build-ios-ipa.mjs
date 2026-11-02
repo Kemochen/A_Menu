@@ -25,8 +25,8 @@ if (!match || Number(match[1]) < 27 || (Number(match[1]) === 27 && Number(match[
   throw new Error("This Duo build requires Xcode 27.1 or newer.");
 }
 run("xcodebuild", [
-  "-project", "ios/App/App.xcodeproj",
-  "-scheme", "App",
+  "-project", "native/AMenu.xcodeproj",
+  "-scheme", "AMenu",
   "-configuration", "Release",
   "-sdk", "iphoneos",
   "-destination", "generic/platform=iOS",
@@ -36,14 +36,14 @@ run("xcodebuild", [
   "build"
 ]);
 
-const app = resolve("build/ios/Build/Products/Release-iphoneos/App.app");
-if (!existsSync(app)) throw new Error("Xcode did not produce App.app.");
+const app = resolve("build/ios/Build/Products/Release-iphoneos/AMenu.app");
+if (!existsSync(app)) throw new Error("Xcode did not produce AMenu.app.");
 
 const staging = resolve("build/ios/ipa");
 // Only generated packaging files are replaced; source and server data are untouched.
 rmSync(staging, { recursive: true, force: true });
 mkdirSync(resolve(staging, "Payload"), { recursive: true });
-cpSync(app, resolve(staging, "Payload/App.app"), { recursive: true });
+cpSync(app, resolve(staging, "Payload/AMenu.app"), { recursive: true });
 mkdirSync("dist", { recursive: true });
 const ipa = resolve("dist/A_Menu-altstore.ipa");
 run("ditto", ["-c", "-k", "--keepParent", "Payload", ipa], { cwd: staging });

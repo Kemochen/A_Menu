@@ -53,16 +53,16 @@ test("places the existing leaf on the right and new dishes on the left without d
   assert.ok(css.includes('margin-left: auto'));
 });
 
-test("uses system-owned navigation bars, a native selection badge, and scene-relative fold regions", () => {
-  const swift = readFileSync(new URL("../mobile/ios/SceneDelegate.swift", import.meta.url), "utf8");
-  assert.ok(swift.includes("UINavigationController(rootViewController: content)"));
-  assert.ok(swift.includes("toolbarItems ="));
-  assert.ok(swift.includes("planItem.badge"));
+test("uses system-owned native navigation, a selection badge, and scene-relative fold regions", () => {
+  const root = readFileSync(new URL("../native/App/AMenuApp.swift", import.meta.url), "utf8");
+  const swift = readFileSync(new URL("../native/App/FoldLayout.swift", import.meta.url), "utf8");
+  assert.ok(root.includes("NavigationView"));
+  assert.ok(root.includes("TabView(selection: $tab)"));
+  assert.ok(root.includes(".badge(store.draft.items.count)"));
   assert.ok(swift.includes(".division, options: .includeInactive"));
   assert.ok(!swift.includes("UIScreen.main"));
-  assert.ok(swift.includes("UIWindow(windowScene: windowScene)"));
   const prepare = readFileSync(new URL("../scripts/prepare-ios.mjs", import.meta.url), "utf8");
-  assert.ok(prepare.includes('cpSync("mobile/ios/SceneDelegate.swift", "ios/App/App/SceneDelegate.swift")'));
+  assert.ok(prepare.includes("native/AMenu.xcodeproj"));
   const ignored = readFileSync(new URL("../.gitignore", import.meta.url), "utf8").split(/\r?\n/);
   assert.ok(ignored.includes("/ios/"));
   assert.ok(!ignored.includes("ios"));
@@ -73,9 +73,7 @@ test("uses bottom navigation for regular phones and actual fold regions for nati
   assert.ok(css.includes('[data-navigation="bottom"] .menu-action-nav'));
   assert.ok(css.includes('[data-navigation="side"] .menu-action-nav'));
   assert.ok(css.includes("grid-template-columns: repeat(3, minmax(0, 1fr))"));
-  const mobile = readFileSync(new URL("../mobile/main.tsx", import.meta.url), "utf8");
-  assert.ok(mobile.includes('presentation={layout.foldable ? "book" : "standard"}'));
-  assert.ok(mobile.includes('key={server}'));
-  const swift = readFileSync(new URL("../mobile/ios/SceneDelegate.swift", import.meta.url), "utf8");
-  assert.ok(swift.includes('result["foldable"] = !regions.isEmpty'));
+  const native = readFileSync(new URL("../native/App/CatalogView.swift", import.meta.url), "utf8");
+  assert.ok(native.includes("BookSplit.resolve(width: width, division: localDivision)"));
+  assert.ok(native.includes("if let split = split"));
 });

@@ -1,84 +1,90 @@
-# iOS / AltStore 分支
+# 原生 SwiftUI / AltStore
 
-`ios-altstore` 用于家庭侧载实验；`main` 继续作为群晖网页版。
+`ios-altstore` 的 iOS 安装包现在使用 `native/` 下的 SwiftUI 工程，不再通过 Capacitor、WKWebView 或网页容器运行。Next.js 网页和 NAS 接口保留，不需要迁移服务器历史数据。
 
-## 架构
+## Big Sur 上打开 Demo
 
-- 复用 `components/MenuApp.tsx`、`data/recipes.ts` 和菜品图片。
-- 初始菜库和图片随 IPA 打包；连接后通过 `/api/recipes` 同步群晖的完整菜库，页面新增的菜品也会共享。内置图片更新需要重新构建 IPA。
-- Vite 只负责把现有 React 界面打成 Capacitor 可打包的静态资源，不替换 Next.js 服务端。
-- 首次启动填写群晖菜单根网址，支持 HTTPS，以及可信内网或 VPN 中的 HTTP，例如 `http://192.168.1.111:3000`。
-- 所有手机和网页都应连接同一个群晖实例；提交、修改和删除继续访问 `/api/history`，共享同一份服务器 JSON。
-- 使用 Capacitor 原生 HTTP 访问接口，无需给群晖接口开放通配 CORS。
-- 普通手机是三列、每页九道菜，系统工具栏在底部；网页版采用对应的底部导航，桌面宽屏保留六列网格。Duo 根据系统折叠区域进入双页布局，当前九道菜留在右侧、左侧增加下一组九道菜。只有一套搜索、分类和分页，展开时均位于右页。折叠和展开不重置搜索、分类、当前页或已选菜单。
-- 菜品、历史、已选菜单和服务器设置接入 `UINavigationController` 管理的系统工具栏，Duo 在支持的姿态自动将其排到侧边共享栏。其他姿态由 iOS 决定工具栏的位置，不强行覆盖系统相机和状态栏区域。已选数量使用系统角标。
-- 原生桥接读取实际视图的折叠保留区域（包含平放时的非活动分隔区域），供网页对齐左右菜页；非折叠设备使用普通布局，不把宽屏手机误认为 Duo。双页模式内再根据可用容器宽度判断是否显示左页，不通过机型名称或设备方向猜测。
-- 原生入口保存在 `mobile/ios/SceneDelegate.swift`，准备脚本在每次同步后复制到生成项目；不直接修改依赖包或依赖未提交的 ios/ 文件。
-- 仍需在 Duo 真机上验证工具栏、展开/合拢、键盘和不对称安全区域；浏览器侧边栏只是预览后备界面，不是原生工具栏的模拟器。
-- 服务器地址只保存在本机，菜单和历史仍在群晖；离线不能提交或同步历史。
+基础工程使用 Swift 5 / iOS 15 API，按 Xcode 13.2.1 可用的工具链编写。Duo 专用符号同时受编译器条件和系统版本限制，旧编译器不编译这一部分。
 
-## 不买 Mac：用 GitHub Actions 构建
+1. Big Sur 至少更新到 11.3，安装并打开 Xcode 13.2.1，完成首次组件安装。参考 [苹果版本说明](https://developer.apple.com/documentation/xcode-release-notes/xcode-13_2_1-release-notes)。
+2. 从 GitHub 下载或克隆 `ios-altstore` 分支的完整项目。
+3. 直接打开 `native/AMenu.xcodeproj`，Scheme 选 `AMenu`。
+4. 选择已安装的 iOS 15 模拟器，按 Command-R。首次构建不需要 npm、pnpm、Node、CocoaPods、SwiftPM 依赖或 NAS。
+5. 通过“菜品库”直接浏览 79 道菜和图片，选菜、查看食材、选择星期和编辑本机草稿；不会把测试草稿写入 NAS。
+6. 要共享提交或查看服务器历史，在“设置”填写 NAS 地址并连接。
 
-1. 将此分支推送到 GitHub；对 `ios-altstore` 的推送会自动触发 **Build AltStore IPA**。
-2. 在仓库的 Actions 中打开这次构建。
-3. 等待 macOS runner 完成，在该次运行的 Artifacts 中下载 `A_Menu-altstore`。
-4. 解压 artifact，里面的 `A_Menu-altstore.ipa` 是未签名的真机安装包，由 AltStore 在安装时重新签名。
+选择模拟器不需要开发者签名；运行到真实设备时，需在 Signing & Capabilities 设置自己的开发团队，或使用下述 AltStore 安装包。
 
-需要重新构建时，向该分支推送新提交即可。`workflow_dispatch` 按钮受 GitHub 默认分支规则限制，不能假设仅在实验分支增加工作流就会出现手动运行按钮；自动构建不依赖该按钮，也不需要合并到 main。
+**验证边界：当前 Windows 环境只能检查 Swift 语法、工程结构和资源，不能代替 Xcode 编译。基础工程的 Big Sur 构建和实际 UI 仍须在对应 Mac 上运行验证；不把静态检查当成原生构建成功。**
 
-工作流不需要 Apple ID、苹果开发者证书或群晖凭据。不要把这些凭据加入仓库或 Actions。
-工作流选择 `xcode-27` runner，并使用 Xcode 27.1；这是苹果提供 Duo 开发支持的版本。GitHub 的此 runner 目前属于预览镜像，容量和稳定性可能有变化。macOS runner 的使用配额、计费由 GitHub 账户决定；构建日志会打印并检查 Xcode 版本。
-参考 [苹果 Duo 开发说明](https://developer.apple.com/news/?id=kkphp5qo) 和 [GitHub Xcode 27 runner 软件清单](https://github.com/actions/runner-images/blob/main/images/macos/xcode-27-arm64-Readme.md)。
+## 原生功能
 
-## 在 Windows 和 iPhone 上安装
+- SwiftUI 原生五个入口：菜品库、历史、已选菜单、添加、设置。
+- 手机每页三列九道菜；宽屏普通设备可显示六列。
+- 原生系统标签栏由 iOS 管理；Duo 的栏位跟随系统，不用网页画一个假任务栏。
+- Duo 用实际视图的 division 保留区域对齐双页，右页保留当前九道，左页显示下一组；只有一套搜索、分类和分页，展开时位于右侧。普通设备不通过机型名称或宽度猜测折叠屏。
+- 点开图片查看标签和食材，选择周一到周日后加入菜单，详情自动关闭。
+- 草稿按周一到周日排列，可以改星期、删任意一天的菜，并填写备注。
+- 提交成功才清空选中标记和草稿，显示最终菜单、分类购物清单，备注位于最后。保存失败保留草稿。
+- 共享历史支持全部/上周、详情、修改和确认删除。离线可以看缓存，但不能写入共享记录。
+- 新增菜品直接访问 NAS，不需要重新打包。新增成功后打开菜品详情，便于马上选星期。
+- 草稿及上次读取的数据保存在本机 UserDefaults；缓存按服务器隔离，不会把另一台 NAS 的历史显示到当前服务器中。
 
-本方案使用 **AltStore Classic**，不是地区应用市场 AltStore PAL。
+## 本地资源
 
-1. 按 [AltStore 官方 Windows 安装指南](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows) 安装 AltServer 和所需 Apple 组件。
-2. 连接 iPhone，按官方步骤安装 AltStore；Apple ID 等认证由你在官方工具中填写。
-3. 将 IPA 放到 iPhone 的“文件”App 中，打开 AltStore 的 My Apps，通过 `+` 选择 IPA。
-4. 启动 A Menu，填写与网页版相同的群晖网址；使用内网 HTTP 时先连上家庭 Wi-Fi 或 VPN。
+`native/Resources/recipes.json` 和 `native/Resources/Photos/*.jpg` 已提交到仓库，Xcode 会直接打包。79 张 AI 图由原有 WebP 转为 512px JPEG，保证旧系统能用原生图片组件读取，未重新生成图片。映射和 NAS 返回的菜品 ID 保持一致；自定义 HTTP/HTTPS 图片网址仍使用远程图片。
 
-免费 Apple 账户侧载通常需要每七天刷新，并受活跃 App 数量限制。电脑上的 AltServer 和手机需能互相连接以刷新。
-详见 [AltStore 使用与刷新说明](https://faq.altstore.io/altstore-classic/your-altstore) 和 [AltServer 说明](https://faq.altstore.io/altstore-classic/altserver)。
-
-## 群晖连接要求
-
-如果只更新 IPA，群晖仍为旧版，新增的 `/api/recipes` 可能返回 HTML 404 页面。旧 App 会将其当作 JSON 解析，iOS 可能显示 `The string did not match the expected pattern.`。请将群晖项目代码更新到包含新接口的 `ios-altstore` 分支，然后在原项目中执行 `docker compose up -d --build`，或在 Container Manager 中重新构建并启动项目。保留现有数据卷，不要删除 volume。修订后的 App 会明确提示服务器版本问题，并继续保留已加载的菜品。
-
-- HTTPS 需要有效、受系统信任的证书；内网或 VPN 可以直接填写 `http://NAS-IP:3000`，不强制配置域名或证书。
-- HTTP 支持 `10.*`、`172.16.*` 到 `172.31.*`、`192.168.*` 和 `100.64.*` 到 `100.127.*` 的地址，另支持 IPv6 ULA / 链路本地地址、`.local` 和无点的本地主机名。公网域名和公网 IP 仍需 HTTPS；VPN 使用自定义域名时优先填写服务器的内网 IP。
-- 填写根网址，不带 `/api/history`，也不要在网址中嵌入账号密码。
-- HTTP 未加密，只用于可信内网或受保护的 VPN；App 不会自动建立或验证 VPN，手机需要自行连接 VPN，且 VPN 路由必须能访问群晖。
-- iOS 打包脚本将 `mobile/ios-network-policy.json` 合并到 Info.plist，仅对指定内网 / VPN 网段设置 HTTP 例外，保留局域网权限说明，不全局关闭 ATS，也不绕过 HTTPS 证书验证。参考 [苹果 ATS 例外配置](https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains)。
-- 首次出现局域网访问提示时允许访问；拒绝后可在 iPhone 设置中重新允许此 App 使用局域网。
-- 当前 API 沿用家庭共享模式，没有新增身份验证。不要直接把可任意修改/删除历史的接口暴露给不受信任的人；家庭远程使用优先配合私有 VPN 或受限网络访问。
-- 不要填写 `localhost`；在手机中它指向手机自己。
-
-## 本地开发与检查
+更改 `data/recipes.ts` 或 `public/dishes/photos/` 后，运行一次：
 
 ```bash
-pnpm install --frozen-lockfile
-pnpm run test:mobile
-pnpm run mobile:typecheck
-pnpm run mobile:build
+pnpm run native:resources
+pnpm run native:check
 ```
 
-Windows 可验证静态资源，但不能运行 Xcode 或本地产出 iOS 二进制。
-浏览器预览运行 `pnpm run dev` 和 `pnpm run mobile:dev`，打开 `http://127.0.0.1:5173`。
-浏览器默认预览普通手机布局和底部导航，通过代理访问本地 3000 端口。开发模式打开 `http://127.0.0.1:5173/?duo-preview=1` 可预览双页菜单和右侧功能栏；搜索、分类、分页只显示在右侧。此开关不代表真实设备检测。服务器设置、内网 HTTP 和远程 HTTPS 连接需要在 iOS 真机上验证。
-开发模式可以打开 `http://127.0.0.1:5173/?native-preview=1` 检查设置界面；浏览器没有原生 HTTP 能力，远程请求仍受浏览器 CORS 规则约束，不能代替真机连通性测试。
+提交生成后的原生资源。`native:check` 核对 JSON、源图哈希、JPEG 哈希和尺寸，避免网页版更新后忘记更新随包菜库。
 
-在 Mac 安装 Xcode 27.1 或更新版本及其命令行工具后：
+`scripts/create-native-project.mjs` 是工程脚手架的显式再生成工具，不属于准备/构建流程；它会重写工程配置。日常使用 Xcode 修改签名和工程，不要随意运行此脚手架。新增 Swift 文件时在 Xcode 中勾选对应 target。
+
+## NAS / VPN
+
+- 原生网络使用 `URLSession` 和 `Codable`，连接同一个 NAS 后，网页与 App 仍共享 `/api/history` 和 `/api/recipes`，无需开放通配 CORS。
+- 支持 HTTPS，以及 RFC1918、100.64/10、IPv6 ULA/链路本地地址、`.local` 和单段本地主机名的可信内网 HTTP。
+- HTTP 不加密，仅用于可信家庭内网或已连接的 VPN；App 不会建立 VPN。公网地址需 HTTPS，不绕过证书校验。
+- 不接受 localhost、凭据、路径、参数和片段。模拟器连接 Mac 本地服务器时也填写 Mac 的局域网 IP，例如 `http://192.168.1.111:3000`。
+- 旧 WebView 的 localStorage 地址不直接迁移，原生版首次使用需要重新填写。NAS 上的历史不受影响。
+- 新增菜品需要 NAS 部署包含 `/api/recipes` 的版本。只更新 App 不会更新 NAS；缺少接口时显示中文提示，仍可浏览本地菜库。
+- 更新 NAS 时使用原有项目与数据卷，例如 `docker compose up -d --build`。不要删除 volume。
+- 本项目沿用家庭共享模式，没有新增身份验证。任何能访问接口的人均可修改/删除共享记录，不应直接暴露到不受信任的公网。
+
+## 云端原生构建和截图
+
+推送 `ios-altstore` 后，GitHub Actions 的 **Build AltStore IPA** 将：
+
+1. 校验共享逻辑、79 道原生资源和 Xcode 工程。
+2. 使用 Xcode 27.1，选择可用的普通 iPhone 模拟器运行原生 XCTest 和 XCUITest，并在可用的 Duo 模拟器上再运行。缺少所需 Duo runtime 会明确失败，不把缺失的测试算通过。
+3. UI 测试使用独立的离线数据，不连接家庭 NAS，不改真实历史。测试包括浏览、查看详情、选菜标记和搜索；截图作为测试附件导出。
+4. 构建原生 unsigned IPA，交给 AltStore 重新签名。
+
+Artifacts：
+
+- `A_Menu-altstore`：`A_Menu-altstore.ipa`。
+- `A_Menu-native-tests`：测试截图和 `.xcresult`。PNG/JPEG 可直接在 Big Sur/Windows 查看；新版 `.xcresult` 通常需要对应新版 Xcode。
+
+模拟器截图不等于完成 Duo 所有姿态测试；展开/合拢连续性、非对称安全区域、键盘与真机局域网权限仍需对应设备验证。工作流开始运行或出现 IPA artifact 才有对应构建证据，源码中的测试并不代表已经通过。
+
+云端仍使用 `xcode-27` 预览 runner 和 Xcode 27.1，可能受平台容量、稳定性、账户配额和计费影响。Duo 原生 API 要求见 [苹果适配文档](https://developer.apple.com/iphone-duo/prepare/)。
+
+在支持 Xcode 27.1 的 Mac 上也可运行：
 
 ```bash
+pnpm run ios:test --require-duo
 pnpm run ios:ipa
 ```
 
-`ios/`、`mobile/dist/`、`build/ios/`、`dist/` 都是生成目录，不提交。需要原生定制时，应把修改转为可重复执行的项目配置脚本，避免只修改会被重新生成的文件。
+普通 iPhone 的旧 SDK 测试可在 Xcode 13.2.1 中用 Product > Test，不通过要求新 SDK 的云端测试脚本。
 
-## 当前验证边界
+## AltStore
 
-Windows 上可以检查 TypeScript、服务器地址校验、网页静态构建和三列/六列布局。
-只有 macOS 构建成功才表示 IPA 已生成；只有 AltStore 在真机安装并运行成功才表示侧载成功。
-本分支本身不代表已经生成 IPA、通过 App Store 审核或完成 Duo 真机验证。
+使用 AltStore Classic 安装 CI 产出的 IPA；AltStore PAL 是不同的地区市场方案。安装、登录和周期刷新遵循 [AltStore 官方指南](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows)。
+
+`mobile/` 是旧混合容器/浏览器比较预览，仍可用于网页回归，但不再是 iOS 发布入口。Swift 工程不链接其中的 Capacitor 依赖。

@@ -2,7 +2,7 @@
 
 一个轻量的中文菜单小应用，用来选择本周菜品、安排周一到周日的食用日期，并自动生成食材汇总。
 
-本分支 `ios-altstore` 增加 iOS 家庭侧载打包支持；群晖网页版仍保留。详见 [iOS / AltStore 说明](docs/IOS_ALTSTORE.md)。
+本分支 `ios-altstore` 提供原生 SwiftUI iOS App；群晖 Next.js 网页与共享接口保留。直接打开 `native/AMenu.xcodeproj` 可运行本地菜品 Demo，基础工程按 Xcode 13.2.1 / iOS 15 API 编写，Duo 专用适配需要新版 SDK。详见 [原生 iOS / AltStore 说明](docs/IOS_ALTSTORE.md)。
 
 ## 功能
 

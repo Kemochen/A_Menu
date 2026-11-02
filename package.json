@@ -12,6 +12,10 @@
     "mobile:typecheck": "tsc --project mobile/tsconfig.json",
     "ios:prepare": "node scripts/prepare-ios.mjs",
     "ios:ipa": "node scripts/prepare-ios.mjs && node scripts/build-ios-ipa.mjs",
+    "ios:test": "node scripts/test-native-ios.mjs",
+    "native:resources": "node scripts/export-native-resources.mjs",
+    "native:check": "node scripts/export-native-resources.mjs --check",
+    "test:native-config": "node --test tests/native-project.test.mjs",
     "test:mobile": "node --test tests/mobile-config.test.mjs tests/book-layout.test.mjs tests/recipe-store.test.mjs tests/dish-photos.test.mjs tests/api-client.test.mjs"
   },
   "dependencies": {

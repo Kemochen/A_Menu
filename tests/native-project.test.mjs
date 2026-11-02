@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
@@ -75,6 +76,28 @@ test("native bundle contains 79 matching recipes and valid app icons", () => {
   const icons = JSON.parse(source("native/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json"));
   for (const icon of icons.images) assert.ok(existsSync(new URL(`../native/Resources/Assets.xcassets/AppIcon.appiconset/${icon.filename}`, import.meta.url)));
   assert.ok(icons.images.some((icon) => icon.idiom === "ios-marketing" && icon.size === "1024x1024"));
+});
+
+test("all app icon sizes are opaque PNGs generated from the selected casserole artwork", async () => {
+  const sharp = createRequire(require.resolve("next/package.json"))("sharp");
+  const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+  const artwork = readFileSync(new URL("../native/Artwork/app-icon.png", import.meta.url));
+  const manifest = JSON.parse(source("native/Resources/manifest.json"));
+  assert.equal(manifest.appIcon.sourceSHA256, hash(artwork));
+  const icons = JSON.parse(source("native/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json"));
+  assert.equal(Object.keys(manifest.appIcon.files).length, icons.images.length);
+  for (const icon of icons.images) {
+    const pixels = Math.round(Number(icon.size.split("x")[0]) * Number(icon.scale.replace("x", "")));
+    const bytes = readFileSync(new URL(`../native/Resources/Assets.xcassets/AppIcon.appiconset/${icon.filename}`, import.meta.url));
+    const metadata = await sharp(bytes).metadata();
+    assert.equal(metadata.format, "png");
+    assert.equal(metadata.width, pixels);
+    assert.equal(metadata.height, pixels);
+    assert.equal(metadata.hasAlpha, false);
+    assert.equal(hash(bytes), manifest.appIcon.files[icon.filename]);
+    const expected = await sharp(artwork).resize(pixels, pixels).flatten({ background: "#ff94ac" }).removeAlpha().png().toBuffer();
+    assert.equal(hash(bytes), hash(expected), icon.filename);
+  }
 });
 
 test("native ATS remains scoped to trusted networks and privacy manifest declares only app preferences", () => {

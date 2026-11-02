@@ -48,24 +48,45 @@ for (const recipe of recipes) {
 
 if (!check) {
   writeFileSync(join(output, "recipes.json"), catalog);
-  writeFileSync(join(output, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-  const assets = join(output, "Assets.xcassets");
-  const icons = join(assets, "AppIcon.appiconset");
-  mkdirSync(icons, { recursive: true });
-  const logo = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"><rect width="1024" height="1024" fill="#246447"/><text x="512" y="716" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-weight="700" font-size="660">A</text></svg>');
-  const images = [];
-  for (const [idiom, size, scales] of [
-    ["iphone", 20, [2, 3]], ["iphone", 29, [2, 3]], ["iphone", 40, [2, 3]], ["iphone", 60, [2, 3]],
-    ["ipad", 20, [1, 2]], ["ipad", 29, [1, 2]], ["ipad", 40, [1, 2]], ["ipad", 76, [1, 2]], ["ipad", 83.5, [2]],
-    ["ios-marketing", 1024, [1]]
-  ]) {
-    for (const scale of scales) {
-      const filename = `${idiom}-${size}-${scale}.png`;
-      await sharp(logo).resize(Math.round(size * scale)).flatten({ background: "#246447" }).removeAlpha().png().toFile(join(icons, filename));
-      images.push({ idiom, size: `${size}x${size}`, scale: `${scale}x`, filename });
+}
+
+const assets = join(output, "Assets.xcassets");
+const icons = join(assets, "AppIcon.appiconset");
+const logo = readFileSync(join(root, "native", "Artwork", "app-icon.png"));
+const appIcon = { sourceSHA256: hash(logo), files: {} };
+const images = [];
+if (!check) mkdirSync(icons, { recursive: true });
+if (check && previous?.appIcon?.sourceSHA256 !== appIcon.sourceSHA256) throw Error("Native app icon is stale. Run pnpm run native:resources.");
+for (const [idiom, size, scales] of [
+  ["iphone", 20, [2, 3]], ["iphone", 29, [2, 3]], ["iphone", 40, [2, 3]], ["iphone", 60, [2, 3]],
+  ["ipad", 20, [1, 2]], ["ipad", 29, [1, 2]], ["ipad", 40, [1, 2]], ["ipad", 76, [1, 2]], ["ipad", 83.5, [2]],
+  ["ios-marketing", 1024, [1]]
+]) {
+  for (const scale of scales) {
+    const filename = `${idiom}-${size}-${scale}.png`;
+    const pixels = Math.round(size * scale);
+    const destination = join(icons, filename);
+    if (check) {
+      const bytes = readFileSync(destination);
+      const metadata = await sharp(bytes).metadata();
+      if (previous?.appIcon?.files?.[filename] !== hash(bytes) || metadata.format !== "png" || metadata.width !== pixels || metadata.height !== pixels || metadata.hasAlpha) {
+        throw Error(`Invalid or stale native app icon: ${filename}`);
+      }
+    } else {
+      const bytes = await sharp(logo).resize(pixels, pixels).flatten({ background: "#ff94ac" }).removeAlpha().png().toBuffer();
+      writeFileSync(destination, bytes);
+      appIcon.files[filename] = hash(bytes);
     }
+    images.push({ idiom, size: `${size}x${size}`, scale: `${scale}x`, filename });
   }
-  writeFileSync(join(icons, "Contents.json"), `${JSON.stringify({ images, info: { author: "xcode", version: 1 } }, null, 2)}\n`);
+}
+const iconContents = `${JSON.stringify({ images, info: { author: "xcode", version: 1 } }, null, 2)}\n`;
+if (check) {
+  if (readFileSync(join(icons, "Contents.json"), "utf8") !== iconContents) throw Error("Native app icon catalog is stale.");
+} else {
+  manifest.appIcon = appIcon;
+  writeFileSync(join(output, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+  writeFileSync(join(icons, "Contents.json"), iconContents);
   writeFileSync(join(assets, "Contents.json"), '{"info":{"author":"xcode","version":1}}\n');
 }
-console.log(`${check ? "Verified" : "Exported"} ${recipes.length} recipes and native JPEG photos.`);
+console.log(`${check ? "Verified" : "Exported"} ${recipes.length} recipes, native JPEG photos and ${images.length} app icons.`);
